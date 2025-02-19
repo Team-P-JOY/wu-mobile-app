@@ -19,7 +19,7 @@ const FooterBar = ({ navigation, currentScreen }) => {
   return (
     <LinearGradient
       // colors={["#580376"]}
-      colors={["#6a11cb", "#6a11cb"]}
+      colors={["#6a11cb", "#6a11cb", "#6a11b0"]}
     >
       <View
         // style={[styles.footerBar, { backgroundColor: theme.colors.background }]}

@@ -36,7 +36,7 @@ const Dashboard = ({ navigation }) => {
   };
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <LinearGradient colors={["#580376", "#6a11cb"]}>
+      <LinearGradient colors={["#6a11b0", "#6a11cb"]}>
         <Appbar.Header style={{ backgroundColor: "transparent", elevation: 0 }}>
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
             <Image
