@@ -11,17 +11,16 @@ import {
   WelfareScreen,
   NotificationScreen,
   CheckInScreen,
+  ChatScreen,
 } from "../screens";
 import FooterBar from "../components/FooterBar";
 
 const Tab = createBottomTabNavigator();
 
-
-
 export default function MainNavigator() {
   return (
     <Tab.Navigator
-      tabBar={(props) => <FooterBar {...props} />}
+      tabBar={(props) => <FooterBar {...props} route={props.route} />}
       screenOptions={{
         headerShown: false,
       }}
@@ -36,6 +35,7 @@ export default function MainNavigator() {
       <Tab.Screen name="Welfare" component={WelfareScreen} />
       <Tab.Screen name="Notification" component={NotificationScreen} />
       <Tab.Screen name="CheckIn" component={CheckInScreen} />
+      <Tab.Screen name="Chat" component={ChatScreen} />
     </Tab.Navigator>
   );
 }

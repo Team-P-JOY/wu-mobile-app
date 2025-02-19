@@ -1,19 +1,22 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { Text } from "react-native-paper";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
-import { useTheme } from "react-native-paper";
 import { Home, News, User, Setting, Scan } from "./svg";
 import { LinearGradient } from "expo-linear-gradient";
 
-const FooterBar = ({ navigation, currentScreen }) => {
-  const theme = useTheme();
+const FooterBar = ({ state, descriptors, navigation }) => {
+  const currentRouteName = state.routes[state.index].name;
+  const ignoreScreens = ["Chat", "CheckIn"];
+  if (ignoreScreens.includes(currentRouteName)) {
+    return null;
+  }
+
   const menuItems = [
     { icon: "home", label: "หน้าหลัก", screen: "Dashboard", svg: Home },
     { icon: "newspaper", label: "ข่าวสาร", screen: "News", svg: News },
     { icon: "qrcode-scan", label: "สแกน", screen: "Qr", svg: Scan },
-    { icon: "cog", label: "ตั้งค่า", screen: "Settings", svg: Setting },
     { icon: "account-circle", label: "โปรไฟล์", screen: "Profile", svg: User },
+    { icon: "cog", label: "ตั้งค่า", screen: "Settings", svg: Setting },
   ];
 
   return (

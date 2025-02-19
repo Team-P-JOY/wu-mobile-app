@@ -40,6 +40,12 @@ const MenuContent = ({ navigation }) => {
       screen: "Mission",
       svg: Gift,
     },
+    {
+      icon: "ticket",
+      label: "Say Hi",
+      screen: "Chat",
+      svg: Gift,
+    },
   ];
   return (
     <View
