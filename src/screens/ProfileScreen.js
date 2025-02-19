@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   email: {
     marginTop: 5,
-    color: "gray",
+    // color: "gray",
   },
   token: {
     fontSize: 8,
