@@ -49,7 +49,6 @@ const Dashboard = ({ navigation }) => {
             </Text>
           </View>
 
-          <Appbar.Action icon="bell" onPress={Notification} color="#fff" />
           <Appbar.Action icon="exit-to-app" onPress={exitApp} color="#fff" />
         </Appbar.Header>
       </LinearGradient>
