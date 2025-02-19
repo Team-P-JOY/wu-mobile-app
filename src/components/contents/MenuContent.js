@@ -1,5 +1,13 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { Checkin, TimeAttendance, Welfare, Notify, Reward, Gift } from "../svg";
+import {
+  Checkin,
+  TimeAttendance,
+  Welfare,
+  Notify,
+  Reward,
+  Gift,
+  Chat,
+} from "../svg";
 import React from "react";
 
 const MenuContent = ({ navigation }) => {
@@ -42,9 +50,9 @@ const MenuContent = ({ navigation }) => {
     },
     {
       icon: "ticket",
-      label: "Say Hi",
+      label: "Say Hi!",
       screen: "Chat",
-      svg: Gift,
+      svg: Chat,
     },
   ];
   return (

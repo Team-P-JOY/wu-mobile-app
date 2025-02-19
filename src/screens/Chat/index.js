@@ -53,6 +53,24 @@ const ChatScreen = ({ navigation }) => {
       sender: "bot",
       timestamp: "15/09/2567 14:45",
     },
+    {
+      id: 7,
+      text: "สวัสดี! มีอะไรให้ช่วยไหม?",
+      sender: "bot",
+      timestamp: "15/09/2567 10:00",
+    },
+    {
+      id: 8,
+      text: "สวัสดี! มีอะไรให้ช่วยไหม?",
+      sender: "bot",
+      timestamp: "15/09/2567 10:00",
+    },
+    {
+      id: 9,
+      text: "สวัสดีครับ",
+      sender: "user",
+      timestamp: "15/09/2567 10:00",
+    },
   ]);
   const [inputText, setInputText] = useState("");
 
@@ -77,10 +95,7 @@ const ChatScreen = ({ navigation }) => {
 
   return (
     <>
-      <TopBar
-        title="Just Say Hi"
-        back={() => navigation.navigate("Dashboard")}
-      />
+      <TopBar title="Say Hi!" back={() => navigation.navigate("Dashboard")} />
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -120,18 +135,16 @@ const ChatScreen = ({ navigation }) => {
                       : styles.botMessage,
                   ]}
                 >
-                  <Card.Content style={{ padding: 0, margin: 0 }}>
-                    <Text
-                      style={[
-                        styles.messageText,
-                        message.sender === "user"
-                          ? styles.userColor
-                          : styles.botColor,
-                      ]}
-                    >
-                      {message.text}
-                    </Text>
-                  </Card.Content>
+                  <Text
+                    style={[
+                      styles.messageText,
+                      message.sender === "user"
+                        ? styles.userColor
+                        : styles.botColor,
+                    ]}
+                  >
+                    {message.text}
+                  </Text>
                 </Card>
               </View>
             ))}
@@ -167,6 +180,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f4f4f9",
+    marginTop: 10,
   },
   chatContainer: {
     flex: 1,
@@ -174,7 +188,7 @@ const styles = StyleSheet.create({
   },
   messageWrapper: {
     marginBottom: 10,
-    maxWidth: "80%",
+    maxWidth: "90%",
   },
   userAlign: {
     alignSelf: "flex-end",
@@ -182,11 +196,11 @@ const styles = StyleSheet.create({
   },
   botAlign: {
     alignSelf: "flex-start",
+    alignItems: "flex-start",
   },
   messageHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // paddingHorizontal: 8,
     marginBottom: 1,
   },
   userHeader: {
@@ -195,6 +209,7 @@ const styles = StyleSheet.create({
   },
   botHeader: {
     alignSelf: "flex-start",
+    alignItems: "flex-start",
   },
   senderText: {
     fontSize: 12,
@@ -208,7 +223,8 @@ const styles = StyleSheet.create({
   messageCard: {
     borderRadius: 10,
     elevation: 3,
-    padding: 0,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     margin: 0,
   },
   userMessage: {
@@ -217,11 +233,10 @@ const styles = StyleSheet.create({
   },
   botMessage: {
     backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ddd",
+    alignItems: "flex-start",
   },
   messageText: {
-    fontSize: 14,
+    fontSize: 18,
     padding: 0,
     margin: 0,
   },
