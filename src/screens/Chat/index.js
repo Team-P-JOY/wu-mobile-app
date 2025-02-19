@@ -4,6 +4,8 @@ import {
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { TextInput, IconButton, Card, Text } from "react-native-paper";
 import Background from "../../components/Background";
@@ -15,18 +17,45 @@ const ChatScreen = ({ navigation }) => {
   const personID = user.person_id;
 
   const [messages, setMessages] = useState([
-    { id: 1, text: "สวัสดี! มีอะไรให้ช่วยไหม?", sender: "bot" },
-    { id: 2, text: "สวัสดีครับ", sender: "user" },
-    { id: 3, text: "มีเรื่องของสวัสดิการอยากสอบถามครับ", sender: "user" },
-    { id: 4, text: "สามารถให้ข้อมูลเบื้องต้นได้เลยครับ", sender: "bot" },
-    { id: 5, text: "ขอบคุณครับ", sender: "user" },
-    { id: 6, text: "ยินดีครับ", sender: "bot" },
-    { id: 7, text: "สวัสดีครับ", sender: "user" },
-    { id: 8, text: "สวัสดีครับ", sender: "user" },
+    {
+      id: 1,
+      text: "สวัสดี! มีอะไรให้ช่วยไหม?",
+      sender: "bot",
+      timestamp: "15/09/2567 10:00",
+    },
+    {
+      id: 2,
+      text: "สวัสดีครับ",
+      sender: "user",
+      timestamp: "15/09/2567 10:00",
+    },
+    {
+      id: 3,
+      text: "มีเรื่องของสวัสดิการอยากสอบถามครับ",
+      sender: "user",
+      timestamp: "15/09/2567 10:00",
+    },
+    {
+      id: 4,
+      text: "สามารถให้ข้อมูลเบื้องต้นได้เลยครับ",
+      sender: "bot",
+      timestamp: "15/09/2567 14:45",
+    },
+    {
+      id: 5,
+      text: "ขอบคุณครับ",
+      sender: "user",
+      timestamp: "15/09/2567 14:45",
+    },
+    {
+      id: 6,
+      text: "ยินดีครับ",
+      sender: "bot",
+      timestamp: "15/09/2567 14:45",
+    },
   ]);
   const [inputText, setInputText] = useState("");
 
-  // สำหรับเลื่อน ScrollView อัตโนมัติ
   const scrollRef = useRef();
 
   const handleSend = () => {
@@ -35,69 +64,102 @@ const ChatScreen = ({ navigation }) => {
         id: messages.length + 1,
         text: inputText,
         sender: "user",
+        timestamp: moment(),
       };
       setMessages([...messages, newMessage]);
       setInputText("");
     }
   };
 
-  // เลื่อน ScrollView ไปยังข้อความล่าสุด
   useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
   return (
-    <Background>
+    <>
       <TopBar
         title="Just Say Hi"
         back={() => navigation.navigate("Dashboard")}
       />
-      <View style={styles.container}>
-        <ScrollView style={styles.chatContainer} ref={scrollRef}>
-          {messages.map((message) => (
-            <Card
-              key={message.id}
-              style={[
-                styles.messageCard,
-                message.sender === "user"
-                  ? styles.userMessage
-                  : styles.botMessage,
-              ]}
-            >
-              <Card.Content style={{ padding: 5 }}>
-                <Text
+
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <ScrollView style={styles.chatContainer} ref={scrollRef}>
+            {messages.map((message) => (
+              <View
+                key={message.id}
+                style={[
+                  styles.messageWrapper,
+                  message.sender === "user"
+                    ? styles.userAlign
+                    : styles.botAlign,
+                ]}
+              >
+                {/* ✅ Header ของข้อความ (ชื่อ + เวลา) */}
+                <View
                   style={[
-                    styles.messageText,
+                    styles.messageHeader,
                     message.sender === "user"
-                      ? styles.userColor
-                      : styles.botColor,
+                      ? styles.userHeader
+                      : styles.botHeader,
                   ]}
                 >
-                  {message.text}
-                </Text>
-              </Card.Content>
-            </Card>
-          ))}
-        </ScrollView>
+                  <Text style={styles.senderText}>
+                    {message.sender === "user" ? "คุณ" : "Bot"}
+                  </Text>
+                  <Text style={styles.dotSeparator}> • </Text>
+                  <Text style={styles.timestampText}>{message.timestamp}</Text>
+                </View>
 
-        <KeyboardAvoidingView behavior="padding" style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={inputText}
-            onChangeText={setInputText}
-            placeholder="พิมพ์ข้อความ..."
-            underlineColor="transparent"
-            activeUnderlineColor="transparent"
-          />
-          <IconButton
-            icon="send"
-            size={28}
-            onPress={handleSend}
-            disabled={!inputText.trim()}
-          />
-        </KeyboardAvoidingView>
-      </View>
-    </Background>
+                {/* ✅ กล่องข้อความ */}
+                <Card
+                  style={[
+                    styles.messageCard,
+                    message.sender === "user"
+                      ? styles.userMessage
+                      : styles.botMessage,
+                  ]}
+                >
+                  <Card.Content style={{ padding: 0, margin: 0 }}>
+                    <Text
+                      style={[
+                        styles.messageText,
+                        message.sender === "user"
+                          ? styles.userColor
+                          : styles.botColor,
+                      ]}
+                    >
+                      {message.text}
+                    </Text>
+                  </Card.Content>
+                </Card>
+              </View>
+            ))}
+          </ScrollView>
+
+          {/* ✅ ช่องป้อนข้อความ */}
+          <KeyboardAvoidingView
+            behavior="padding"
+            style={styles.inputContainer}
+          >
+            <TextInput
+              style={styles.input}
+              value={inputText}
+              onChangeText={setInputText}
+              placeholder="พิมพ์ข้อความ..."
+              underlineColor="transparent"
+              activeUnderlineColor="transparent"
+            />
+            <IconButton
+              icon="send"
+              size={28}
+              onPress={handleSend}
+              disabled={!inputText.trim()}
+            />
+          </KeyboardAvoidingView>
+        </View>
+      </TouchableWithoutFeedback>
+    </>
   );
 };
 
@@ -110,43 +172,84 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
-  messageCard: {
-    marginVertical: 5,
+  messageWrapper: {
+    marginBottom: 10,
     maxWidth: "80%",
+  },
+  userAlign: {
+    alignSelf: "flex-end",
+    alignItems: "flex-end",
+  },
+  botAlign: {
+    alignSelf: "flex-start",
+  },
+  messageHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // paddingHorizontal: 8,
+    marginBottom: 1,
+  },
+  userHeader: {
+    alignSelf: "flex-end",
+    alignItems: "flex-end",
+  },
+  botHeader: {
+    alignSelf: "flex-start",
+  },
+  senderText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#6a11cb",
+  },
+  timestampText: {
+    fontSize: 12,
+    color: "#888",
+  },
+  messageCard: {
     borderRadius: 10,
+    elevation: 3,
+    padding: 0,
+    margin: 0,
   },
   userMessage: {
-    alignSelf: "flex-end",
     backgroundColor: "#6a11cb",
+    alignItems: "flex-end",
   },
   botMessage: {
-    alignSelf: "flex-start",
     backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
   messageText: {
     fontSize: 14,
-    // lineHeight: 20,
+    padding: 0,
+    margin: 0,
   },
   userColor: {
     color: "#fff",
   },
   botColor: {
-    color: "#6a11cb",
+    color: "#333",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // paddingHorizontal: 10,
-    // padding: 5,
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   input: {
     flex: 1,
     backgroundColor: "#f5f5f5",
     borderRadius: 10,
-    padding: 0,
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  dotSeparator: {
+    color: "#aaa",
+    fontSize: 12,
   },
 });
 
