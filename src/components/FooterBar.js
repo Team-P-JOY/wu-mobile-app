@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
   footerBar: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 10,
+    padding: 10,
+    paddingBottom: 15,
     // backgroundColor: "#580376",
     width: "100%",
     elevation: 10,
