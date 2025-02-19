@@ -1,15 +1,13 @@
 {
   "expo": {
-    "name": "app-colab-chatgpt",
-    "slug": "app-colab-chatgpt",
+    "name": "WU APP",
+    "slug": "wu-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/wallpaper.jpg",
-      "resizeMode": "cover", 
       "backgroundColor": "#6a11cb"
     },
     "ios": {
