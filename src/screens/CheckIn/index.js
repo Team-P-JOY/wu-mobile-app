@@ -13,7 +13,7 @@ import MapView, { Marker } from "react-native-maps";
 import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
 
-const CheckInScreen = () => {
+const CheckInScreen = ({ navigation }) => {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasLocationPermission, setHasLocationPermission] = useState(null);
   const cameraRef = useRef(null);
@@ -67,7 +67,7 @@ const CheckInScreen = () => {
     );
   }
 
-  const takePicture = async ({ navigation }) => {
+  const takePicture = async () => {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync();
       setPhoto(photo.uri);
