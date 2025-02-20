@@ -102,10 +102,11 @@ npx react-native run-ios      # สำหรับ iOS
 | 4 เดือน | พัฒนาและทดสอบ |
 | 1 เดือน | นำระบบขึ้นใช้งานจริง |
 
-## ทีมพัฒนา
-- นักพัฒนา: 3 คน
-- นักออกแบบ UI/UX: 1 คน
-- ผู้ทดสอบระบบ: 2 คน
+## 👨‍💻 ** ทีมพัฒนา (Development Team)**
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+[<img src="https://github.com/sthongchan27.png" width="50" height="50" />](https://github.com/sthongchan27)
+[<img src="https://github.com/kimookpong.png" width="50" height="50" />](https://github.com/kimookpong)
+[<img src="https://github.com/manitgithub.png" width="50" height="50" />](https://github.com/manitgithub)
+[<img src="https://github.com/natdanaisu.png" width="50" height="50" />](https://github.com/natdanaisu)
+[<img src="https://github.com/Yapaka51.png" width="50" height="50" />](https://github.com/Yapaka51)
+
