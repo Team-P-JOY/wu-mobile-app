@@ -8,7 +8,7 @@ const PinButton = ({ mode, style, children, ...props }) => {
     <PaperButton
       style={[
         styles.button,
-        mode === "outlined" && { backgroundColor: theme.colors.surface },
+        mode === "outlined" && { backgroundColor: theme.colors.myTheme },
         style,
       ]}
       labelStyle={styles.text}

@@ -30,13 +30,13 @@ export default function ProfileScreen({ navigation }) {
           />
           <Text
             variant="headlineMedium"
-            style={[styles.name, { color: theme.colors.primary }]}
+            style={[styles.name, { color: theme.colors.myTheme }]}
           >
             {user?.fullname_th}
           </Text>
           <Text
             variant="bodyLarge"
-            style={[styles.email, { color: theme.colors.primary }]}
+            style={[styles.email, { color: theme.colors.myTheme }]}
           >
             {user?.fullname_en}
           </Text>
@@ -44,13 +44,13 @@ export default function ProfileScreen({ navigation }) {
 
         <Card
           mode="outlined"
-          style={[styles.card, { borderColor: theme.colors.primary }]}
+          style={[styles.card, { borderColor: theme.colors.myTheme }]}
         >
           <Card.Content>
-            <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
+            <Text variant="bodyLarge" style={{ color: theme.colors.myTheme }}>
               {user?.position_th || "ไม่มีตำแหน่ง"}
             </Text>
-            <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
+            <Text variant="bodyLarge" style={{ color: theme.colors.myTheme }}>
               {user?.division_th || "ไม่มีหน่วยงาน"}
             </Text>
             <View
@@ -70,7 +70,7 @@ export default function ProfileScreen({ navigation }) {
                   value={user.person_id}
                   size={250}
                   backgroundColor={theme.colors.background}
-                  color={theme.colors.primary}
+                  color={theme.colors.myTheme}
                   // logo={require("../assets/logo.png")}
                   // logoSize={50}
                 />

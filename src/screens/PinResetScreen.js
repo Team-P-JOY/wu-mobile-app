@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import BackgroundImage from "../components/BackgroundImage";
-import { Text, Button, Appbar, useTheme } from "react-native-paper";
+import { Text, Appbar } from "react-native-paper";
 import Header from "../components/Header";
 import PinButton from "../components/PinButton";
 import { AuthContext } from "../context/AuthContext";
 import ConfirmModal from "../components/ConfirmModal";
+import { theme } from "../core/theme";
 
 const PinResetScreen = ({ navigation }) => {
-  const theme = useTheme();
   const { savePin } = useContext(AuthContext);
   const [pin, setPin] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,11 +40,11 @@ const PinResetScreen = ({ navigation }) => {
       <Appbar.Header style={{ backgroundColor: "transparent", elevation: 0 }}>
         <Appbar.BackAction
           onPress={() => navigation.navigate("Settings")}
-          color={theme.colors.primary}
+          color={theme.colors.myTheme}
         />
         <Appbar.Content
           title="ย้อนกลับ"
-          titleStyle={{ fontSize: 18, color: theme.colors.primary }}
+          titleStyle={{ fontSize: 18, color: theme.colors.myTheme }}
         />
       </Appbar.Header>
       <View style={styles.container}>
