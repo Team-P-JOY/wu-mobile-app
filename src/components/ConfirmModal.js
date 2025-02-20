@@ -1,14 +1,18 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Modal, Portal, Text, Button } from "react-native-paper";
+import { Modal, Portal, Text, Button, useTheme } from "react-native-paper";
 
 const ConfirmModal = ({ visible, onClose, onConfirm, message }) => {
+  const theme = useTheme();
   return (
     <Portal>
       <Modal
         visible={visible}
         onDismiss={onClose}
-        contentContainerStyle={styles.modalContainer}
+        contentContainerStyle={[
+          styles.modalContainer,
+          { backgroundColor: theme.colors.background },
+        ]}
       >
         <Text style={styles.message}>{message}</Text>
         <View style={styles.buttonContainer}>

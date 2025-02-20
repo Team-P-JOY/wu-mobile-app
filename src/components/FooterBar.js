@@ -6,7 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const FooterBar = ({ state, descriptors, navigation }) => {
   const currentRouteName = state.routes[state.index].name;
-  const ignoreScreens = ["Chat", "CheckIn"];
+  const ignoreScreens = ["Chat", "CheckIn", "PinReset"];
   if (ignoreScreens.includes(currentRouteName)) {
     return null;
   }

@@ -12,6 +12,7 @@ import {
   NotificationScreen,
   CheckInScreen,
   ChatScreen,
+  PinResetScreen,
 } from "../screens";
 import FooterBar from "../components/FooterBar";
 
@@ -36,6 +37,7 @@ export default function MainNavigator() {
       <Tab.Screen name="Notification" component={NotificationScreen} />
       <Tab.Screen name="CheckIn" component={CheckInScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />
+      <Tab.Screen name="PinReset" component={PinResetScreen} />
     </Tab.Navigator>
   );
 }

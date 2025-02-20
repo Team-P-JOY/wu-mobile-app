@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "react-native-paper";
 import {
   Checkin,
   TimeAttendance,
@@ -76,7 +77,7 @@ const MenuContent = ({ navigation }) => {
         >
           {/* <IconButton icon={item.icon} size={40} /> */}
           <item.svg width={50} height={50} />
-          <Text>{item.label}</Text>
+          <Text variant="bodyMedium">{item.label}</Text>
         </TouchableOpacity>
       ))}
     </View>

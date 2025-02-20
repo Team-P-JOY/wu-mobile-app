@@ -16,7 +16,7 @@ export default function SettingsScreen({ navigation }) {
           title="เปลี่ยน PIN"
           description="ตั้งค่า PIN ใหม่"
           left={(props) => <List.Icon {...props} icon="key" />}
-          onPress={() => navigation.navigate("PinSetup")}
+          onPress={() => navigation.navigate("PinReset")}
         />
         <Divider />
         <List.Item

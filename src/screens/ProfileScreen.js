@@ -4,6 +4,7 @@ import { Text, Avatar, Card, Divider } from "react-native-paper";
 import { AuthContext } from "../context/AuthContext";
 import BackgroundImage from "../components/BackgroundImage";
 import QRCode from "react-native-qrcode-svg";
+import { theme } from "../core/theme";
 
 export default function ProfileScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext);
@@ -27,20 +28,29 @@ export default function ProfileScreen({ navigation }) {
             style={styles.avatar}
             source={{ uri: user?.avatar || "https://i.pravatar.cc/150?img=3" }}
           />
-          <Text variant="headlineMedium" style={styles.name}>
+          <Text
+            variant="headlineMedium"
+            style={[styles.name, { color: theme.colors.primary }]}
+          >
             {user?.fullname_th}
           </Text>
-          <Text variant="bodyLarge" style={styles.email}>
+          <Text
+            variant="bodyLarge"
+            style={[styles.email, { color: theme.colors.primary }]}
+          >
             {user?.fullname_en}
           </Text>
         </View>
 
-        <Card style={styles.card}>
+        <Card
+          mode="outlined"
+          style={[styles.card, { borderColor: theme.colors.primary }]}
+        >
           <Card.Content>
-            <Text variant="bodyLarge">
+            <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
               {user?.position_th || "ไม่มีตำแหน่ง"}
             </Text>
-            <Text variant="bodyLarge">
+            <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
               {user?.division_th || "ไม่มีหน่วยงาน"}
             </Text>
             <View
@@ -51,21 +61,25 @@ export default function ProfileScreen({ navigation }) {
             >
               <View
                 style={{
-                  padding: 15,
-                  backgroundColor: "white",
+                  padding: 10,
+                  backgroundColor: theme.colors.background,
+                  borderRadius: 10,
                 }}
               >
                 <QRCode
                   value={user.person_id}
                   size={250}
-                  backgroundColor="white"
+                  backgroundColor={theme.colors.background}
+                  color={theme.colors.primary}
                   // logo={require("../assets/logo.png")}
                   // logoSize={50}
                 />
               </View>
             </View>
-            <Divider style={{ marginVertical: 10 }} />
-            <Text style={styles.token}>{user?.token || "ไม่มี Token"}</Text>
+
+            <Text style={[styles.token, { color: theme.colors.onPrimary }]}>
+              {user?.token || "ไม่มี Token"}
+            </Text>
           </Card.Content>
         </Card>
       </View>
@@ -80,8 +94,8 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     marginBottom: 20,
-    padding: 10,
-    paddingBottom: 0,
+
+    backgroundColor: "transparent",
   },
   button: {
     width: "80%",
