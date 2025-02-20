@@ -1,5 +1,5 @@
-import { View, Text, Button } from "react-native";
-import { BackHandler } from "react-native";
+import { View, Text } from "react-native";
+import Logo from "../components/Logo";
 
 const DevBlockedScreen = () => {
   return (
@@ -11,10 +11,11 @@ const DevBlockedScreen = () => {
         backgroundColor: "#6a11cb",
       }}
     >
-      <Text style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
+      {/* <Logo /> */}
+      <Text style={{ fontSize: 60, fontWeight: "bold", color: "red" }}>X</Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>
         แอปนี้ไม่สามารถใช้งานใน Dev Mode ได้
       </Text>
-      {/* <Button title="ออกจากแอป" onPress={() => BackHandler.exitApp()} /> */}
     </View>
   );
 };
