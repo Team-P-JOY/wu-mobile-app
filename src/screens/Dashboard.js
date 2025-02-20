@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   BackHandler,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import {
   Appbar,
@@ -27,12 +28,20 @@ const width = Dimensions.get("window").width;
 const Dashboard = ({ navigation }) => {
   const theme = useTheme();
   const { user } = useContext(AuthContext);
+  const [refreshing, setRefreshing] = useState(false);
 
   const exitApp = () => {
     BackHandler.exitApp();
   };
   const Notification = () => {
     navigation.navigate("Notification");
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
   };
 
   return (
@@ -54,7 +63,12 @@ const Dashboard = ({ navigation }) => {
         </Appbar.Header>
       </LinearGradient>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={{ height: width / 3 }}>
           <BannerSlide />
         </View>
