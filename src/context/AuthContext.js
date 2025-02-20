@@ -32,11 +32,13 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     const error = await auth.login(username, password);
-    if (error) {
-      return { ...username, error: loginError };
+
+    if (error !== "") {
+      return error;
     }
     const data = await auth.getUser();
     setUser(data);
+    return "";
   };
 
   const logout = async () => {

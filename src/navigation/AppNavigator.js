@@ -9,14 +9,21 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import AuthNavigator from "./AuthNavigator";
 import MainNavigator from "./MainNavigator";
-import { PinScreen, PinSetScreen, BlankScreen } from "../screens";
+import {
+  PinScreen,
+  PinSetScreen,
+  BlankScreen,
+  DevBlockedScreen,
+} from "../screens";
 
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
+  const devMode = false; //__DEV__
   const { user, pin, pinAccess, isDarkMode, isLoading } =
     useContext(AuthContext);
   const getInitialRoute = () => {
+    if (devMode) return "DevBlocked";
     if (isLoading) return "Blank";
     if (user == null) return "Auth";
     if (pin == null) return "PinSet";
@@ -31,7 +38,9 @@ export default function AppNavigator() {
           initialRouteName={getInitialRoute()}
           screenOptions={{ headerShown: false }}
         >
-          {isLoading ? (
+          {devMode ? (
+            <Stack.Screen name="Blank" component={DevBlockedScreen} />
+          ) : isLoading ? (
             <Stack.Screen name="Blank" component={BlankScreen} />
           ) : user == null ? (
             <Stack.Screen name="Auth" component={AuthNavigator} />

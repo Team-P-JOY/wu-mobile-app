@@ -2,6 +2,7 @@ export { default as LoginScreen } from "./LoginScreen";
 export { default as PinScreen } from "./PinScreen";
 export { default as BlankScreen } from "./BlankScreen";
 export { default as PinSetScreen } from "./PinSetScreen";
+export { default as DevBlockedScreen } from "./DevBlockedScreen";
 
 export { default as Dashboard } from "./Dashboard";
 export { default as ProfileScreen } from "./ProfileScreen";

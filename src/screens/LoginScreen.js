@@ -29,6 +29,7 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     const loginError = await login(username.value, password.value);
+
     if (loginError) {
       setUsername({ ...username, error: loginError });
     }

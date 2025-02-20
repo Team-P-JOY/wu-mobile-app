@@ -34,6 +34,7 @@ const Dashboard = ({ navigation }) => {
   const Notification = () => {
     navigation.navigate("Notification");
   };
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <LinearGradient colors={["#6a11b0", "#6a11cb"]}>
@@ -45,7 +46,7 @@ const Dashboard = ({ navigation }) => {
               resizeMode="contain"
             />
             <Text style={{ fontSize: 18, color: "#fff" }}>
-              {"สวัสดี " + user.fullname_th}
+              {"สวัสดี, " + user?.fullname_th}
             </Text>
           </View>
 
