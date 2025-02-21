@@ -14,6 +14,7 @@ import * as Location from "expo-location";
 import { WebView } from "react-native-webview";
 import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
+import { theme } from "../../core/theme";
 
 const CheckInScreen = ({ navigation }) => {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -171,7 +172,7 @@ const CheckInScreen = ({ navigation }) => {
             )}
           </View>
           <View style={styles.mapContainer}>
-            <View style={styles.map}>
+            <View style={[styles.map, { borderColor: theme.colors.myTheme }]}>
               {location ? (
                 <WebView
                   originWhitelist={["*"]}
@@ -217,12 +218,18 @@ const CheckInScreen = ({ navigation }) => {
                 <Text>กำลังดึงตำแหน่ง GPS...</Text>
               )}
             </View>
-            <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
-              <Ionicons name="location-outline" size={28} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
-              <Ionicons name="camera-reverse-outline" size={28} color="white" />
-            </TouchableOpacity>
+            <View style={styles.buttonsRow}>
+              <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
+                <Ionicons name="location-outline" size={28} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
+                <Ionicons
+                  name="camera-reverse-outline"
+                  size={28}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -243,9 +250,9 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    color: "#fff",
+    color: theme.colors.myTheme,
   },
   headerStatus: {
     fontSize: 15,
@@ -307,28 +314,31 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     width: 150,
-    display: "flex",
   },
   map: {
     height: 250,
     borderWidth: 1,
-    borderColor: "#000",
     backgroundColor: "#FFF",
     borderRadius: 10,
     overflow: "hidden",
     zIndex: 5,
   },
-  mapButton: {
-    width: 55,
-    height: 55,
+  buttonsRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginTop: 10,
+  },
+  mapButton: {
+    width: 50,
+    height: 50,
+    // marginTop: 10,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
-    padding: 12,
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#fff",
+    marginLeft: 10,
   },
   permissionContainer: {
     flex: 1,
