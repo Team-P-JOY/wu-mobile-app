@@ -24,6 +24,7 @@ export default function MainNavigator() {
       tabBar={(props) => <FooterBar {...props} route={props.route} />}
       screenOptions={{
         headerShown: false,
+        unmountOnBlur: true,
       }}
     >
       <Tab.Screen name="Dashboard" component={Dashboard} />

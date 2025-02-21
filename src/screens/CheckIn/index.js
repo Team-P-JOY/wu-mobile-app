@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { CameraView, Camera } from "expo-camera";
 import * as Location from "expo-location";
 // import MapView, { Marker } from "react-native-maps";
@@ -19,9 +20,9 @@ const CheckInScreen = ({ navigation }) => {
   const [hasLocationPermission, setHasLocationPermission] = useState(null);
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [cameraType, setCameraType] = useState("back");
+  const [cameraType, setCameraType] = useState("front");
 
   useEffect(() => {
     (async () => {
@@ -48,23 +49,41 @@ const CheckInScreen = ({ navigation }) => {
 
   if (hasCameraPermission === null || hasLocationPermission === null) {
     return (
-      <View style={styles.permissionContainer}>
-        <Text>กำลังขอสิทธิ์...</Text>
-      </View>
+      <Background>
+        <TopBar
+          title="บันทึกเวลาเข้างาน"
+          back={() => navigation.navigate("Dashboard")}
+        />
+        <View style={styles.permissionContainer}>
+          <Text>กำลังขอสิทธิ์...</Text>
+        </View>
+      </Background>
     );
   }
   if (!hasCameraPermission) {
     return (
-      <View style={styles.permissionContainer}>
-        <Text>❌ ไม่ได้รับสิทธิ์ใช้กล้อง</Text>
-      </View>
+      <Background>
+        <TopBar
+          title="บันทึกเวลาเข้างาน"
+          back={() => navigation.navigate("Dashboard")}
+        />
+        <View style={styles.permissionContainer}>
+          <Text>❌ ไม่ได้รับสิทธิ์ใช้กล้อง</Text>
+        </View>
+      </Background>
     );
   }
   if (!hasLocationPermission) {
     return (
-      <View style={styles.permissionContainer}>
-        <Text>❌ ไม่ได้รับสิทธิ์ใช้ GPS</Text>
-      </View>
+      <Background>
+        <TopBar
+          title="บันทึกเวลาเข้างาน"
+          back={() => navigation.navigate("Dashboard")}
+        />
+        <View style={styles.permissionContainer}>
+          <Text>❌ ไม่ได้รับสิทธิ์ใช้ GPS</Text>
+        </View>
+      </Background>
     );
   }
 
@@ -75,7 +94,6 @@ const CheckInScreen = ({ navigation }) => {
     }
   };
 
-  // ✅ ฟังก์ชันสลับกล้อง
   const switchCamera = () => {
     setCameraType((prevType) => (prevType === "back" ? "front" : "back"));
   };
@@ -97,7 +115,16 @@ const CheckInScreen = ({ navigation }) => {
               month: "long",
               year: "numeric",
             })}
+          </Text>
+          <Text style={styles.headerText}>
             เวลา {currentTime.toLocaleTimeString("th-TH")}
+          </Text>
+
+          <Text style={[styles.headerStatus, { color: "red" }]}>
+            คุณอยู่นอกพื้นที่ทำงาน
+          </Text>
+          <Text style={[styles.headerStatus2]}>
+            ({location.latitude}, {location.longitude})
           </Text>
         </View>
         <View style={styles.content}>
@@ -105,7 +132,7 @@ const CheckInScreen = ({ navigation }) => {
             {!photo ? (
               <CameraView
                 style={styles.camera}
-                cameraType={cameraType}
+                facing={cameraType}
                 ref={cameraRef}
               >
                 <View style={styles.buttonContainer}>
@@ -113,31 +140,45 @@ const CheckInScreen = ({ navigation }) => {
                     style={styles.captureButton}
                     onPress={takePicture}
                   >
-                    <Text style={styles.buttonText}>📸 ถ่ายรูป</Text>
+                    <Text style={styles.buttonText}>เข้างาน</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={styles.switchButton}
-                    onPress={switchCamera}
+                    style={styles.captureButton}
+                    onPress={takePicture}
                   >
-                    <Text style={styles.buttonText}>🔄 สลับกล้อง</Text>
+                    <Text style={styles.buttonText}>ออกงาน</Text>
                   </TouchableOpacity>
                 </View>
               </CameraView>
             ) : (
-              <View style={styles.imageContainer}>
+              <View style={styles.camera}>
                 <Image source={{ uri: photo }} style={styles.image} />
-                <Button title="ถ่ายใหม่" onPress={() => setPhoto(null)} />
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.captureButton}
+                    onPress={() => setPhoto(null)}
+                  >
+                    <Text style={styles.buttonText}>ยืนยัน</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.captureButton}
+                    onPress={() => setPhoto(null)}
+                  >
+                    <Text style={styles.buttonText}>📸 ถ่ายใหม่</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           </View>
-          <View style={styles.map}>
-            {location ? (
-              <WebView
-                originWhitelist={["*"]}
-                javaScriptEnabled={true}
-                domStorageEnabled={true}
-                source={{
-                  html: `
+          <View style={styles.mapContainer}>
+            <View style={styles.map}>
+              {location ? (
+                <WebView
+                  originWhitelist={["*"]}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  source={{
+                    html: `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -170,28 +211,19 @@ const CheckInScreen = ({ navigation }) => {
                 </body>
                 </html>
               `,
-                }}
-              />
-            ) : (
-              <Text>กำลังดึงตำแหน่ง GPS...</Text>
-            )}
+                  }}
+                />
+              ) : (
+                <Text>กำลังดึงตำแหน่ง GPS...</Text>
+              )}
+            </View>
+            <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
+              <Ionicons name="location-outline" size={28} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
+              <Ionicons name="camera-reverse-outline" size={28} color="white" />
+            </TouchableOpacity>
           </View>
-
-          {/* {location ? (
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-              }}
-            >
-              <Marker coordinate={location} title="คุณอยู่ที่นี่" />
-            </MapView>
-          ) : (
-            <Text>กำลังดึงตำแหน่ง GPS...</Text>
-          )} */}
         </View>
       </View>
     </Background>
@@ -204,16 +236,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
   },
   header: {
-    padding: 10,
-    backgroundColor: "#DDA8A8",
+    position: "absolute",
+    top: 10,
+    left: 10,
     width: "100%",
-    alignItems: "center",
-    zIndex: 10, // ให้ Header อยู่ด้านบนสุด
+    zIndex: 10,
   },
   headerText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#fff",
+  },
+  headerStatus: {
+    fontSize: 15,
+    fontWeight: "bold",
+    paddingTop: 15,
+  },
+  headerStatus2: {
+    fontSize: 10,
+    fontWeight: "bold",
+    color: "gray",
+    paddingTop: 2,
   },
   content: {
     flex: 1,
@@ -230,13 +273,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     flexDirection: "row",
-    // justifyContent: "center",
+    justifyContent: "center",
   },
   captureButton: {
-    backgroundColor: "#FFF",
-    padding: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderWidth: 1,
+    borderColor: "#fff",
+    padding: 15,
     marginHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 50,
   },
   switchButton: {
     backgroundColor: "#FFD700",
@@ -245,29 +290,45 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: "bold",
+    color: "#fff",
   },
   imageContainer: {
     alignItems: "center",
   },
   image: {
-    width: 300,
-    height: 200,
-    borderRadius: 10,
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+  mapContainer: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    width: 150,
+    display: "flex",
   },
   map: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    width: 150,
     height: 250,
     borderWidth: 1,
     borderColor: "#000",
     backgroundColor: "#FFF",
     borderRadius: 10,
     overflow: "hidden",
-    zIndex: 5, // ให้อยู่เหนือกล้อง
+    zIndex: 5,
+  },
+  mapButton: {
+    width: 55,
+    height: 55,
+    marginTop: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    padding: 12,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#fff",
   },
   permissionContainer: {
     flex: 1,
