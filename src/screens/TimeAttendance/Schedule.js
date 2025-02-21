@@ -12,6 +12,28 @@ import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
 import { AuthContext } from "../../context/AuthContext";
 import { getDatetext } from "../../core/utils";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const statusColor = (status, leaveday) => {
+  let color = "white";
+  
+  if(leaveday){
+    //ลางาน
+    return "yellow";
+  }
+  else{
+    if(status == 0)
+      //วันหยุด
+      color = "white";
+    else if(status == 1)
+      //ปกติ
+      color = "green";
+    else if(status >= 2)
+      //ไม่ปกติ
+      color = "red";
+  }
+  return color;
+};
 
 const Schedule = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -101,11 +123,11 @@ const Schedule = ({ navigation }) => {
         rightIcon="menu"
       />
 
-      {user && <Text>{user.person_id}</Text>}
+      {/* {user && <Text>{user.person_id}</Text>}
 
       <TouchableOpacity onPress={() => navigation.navigate("Timestamp")}>
         <Text>test to go to Timestamp</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* ✅ เปลี่ยน Dropdown เป็น Menu */}
       <View style={styles.dropdownMonth}>
@@ -160,6 +182,20 @@ const Schedule = ({ navigation }) => {
                           {"ออก: " + row.timeCheckout}
                         </Text>
                       </View>
+                      {/* <View style={styles.containerTime}>
+                        <View style={{ flexDirection: "row" }}>
+                          <Icon name="login" size={16} color="#696969" />
+                          <Text style={styles.labelClockIn}>
+                            {row.timeCheckin}
+                          </Text>
+                        </View>
+                        <View style={{ flexDirection: "row" }}>
+                          <Icon name="logout" size={16} color="#696969" />
+                          <Text style={styles.labelClockOut}>
+                            { row.timeCheckout}
+                          </Text>
+                        </View>
+                      </View> */}
                     </View>
                   }
                   right={(props) => (
@@ -167,13 +203,14 @@ const Schedule = ({ navigation }) => {
                       <List.Icon
                         {...props}
                         icon="circle"
-                        color="red"
+                        color={statusColor(row.status, row.leaveDay)}
                         style={styles.iconStatus}
                       />
-                      <Text style={styles.textStatus}>{row.statusNameTh}</Text>
+                      <Text style={styles.textStatus}>{row.leaveDay ? "ลา" : row.statusNameTh}</Text>
                     </View>
                   )}
                   style={styles.listShift}
+                  onPress={() => navigation.navigate("ScheduleDetail", { id: row.timeworkId, personId: row.personId, startDate: row.startDate })}
                 />
                 <Divider />
               </View>
@@ -191,6 +228,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   dropdownMonth: {
+    marginTop: 10,
     marginBottom: 10,
     alignItems: "center",
   },
@@ -209,10 +247,12 @@ const styles = StyleSheet.create({
   },
   containerTime: {
     flexDirection: "row",
+    marginTop: 5,
   },
   labelShift: {
     color: "steelblue",
     fontSize: 14,
+    marginTop:5,
   },
   labelClockIn: {
     color: "#32cd32",

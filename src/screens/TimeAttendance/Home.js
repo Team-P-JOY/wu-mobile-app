@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
   View,
-  Text,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  FlatList
 } from "react-native";
 import {
   Avatar,
@@ -14,11 +14,13 @@ import {
   Button,
   List,
   Divider,
+  Text
 } from "react-native-paper";
 import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
 import { AuthContext } from "../../context/AuthContext";
 import { getDatetext } from "../../core/utils";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +88,30 @@ const styles = StyleSheet.create({
     width: "120",
     fontSize: 16,
   },
+  textLastUpdate: {
+    color: "lightgray",
+    fontSize: 12,
+    textAlign: "right",
+    marginTop:10
+  },
+  containnerTitle: {
+    flexDirection: "row",
+    marginTop: 10,
+    backgroundColor: "#FF8C00",
+    padding: 10
+  },
+  textName: {
+    fontSize: 18,
+    color: "#696969"
+  },
+  textWorkTotal:{
+    color: "#FF8C00",
+    fontWeight: "bold",
+  },
+  textWork1: {
+    color: "#000",
+    fontWeight: "bold",
+  }
 });
 
 // const optionMonth = [
@@ -104,26 +130,6 @@ const styles = StyleSheet.create({
 //   { label: 'ธันวาคม 2568', value: '12-2568' },
 // ];
 
-const statusColor = (status, leaveday) => {
-  let color = "white";
-
-  if (leaveday) {
-    //ลางาน
-    return "yellow";
-  } else {
-    if (status == 0)
-      //วันหยุด
-      color = "white";
-    else if (status == 1)
-      //ปกติ
-      color = "green";
-    else if (status >= 2)
-      //ไม่ปกติ
-      color = "red";
-  }
-  return color;
-};
-
 const Home = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   console.log("user", user);
@@ -133,11 +139,14 @@ const Home = ({ navigation }) => {
   let curYear = curDate.getFullYear() + 543;
   let monthly = curMonth < 10 ? "0" + curMonth : curMonth;
   monthly = monthly + "-" + curYear;
-  console.log("this month " + monthly);
   const [optionMonth, setOptionMonth] = useState([]);
   const [month, setMonth] = useState(monthly);
   const [shift, setShift] = useState([]);
+  const [lastUpdate, setLastUpdate] = useState("");
+  const [workTotal, setWorkTotal] = useState(0);
+  const [work1, setWork1] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [workList, setWorkList] = useState([]);
 
   const initSelectMonth = () => {
     fetch(
@@ -188,10 +197,10 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     if (loading == true) {
-      initSelectMonth();
-      console.log(month);
+      //initSelectMonth();
+      // console.log(month);
       fetch(
-        `https://apisprd.wu.ac.th/tal/tal-timework/get-schedule?personId=${user.person_id}&month=${month}`,
+        `https://apisprd.wu.ac.th/tal/tal-timework/${user.person_id}/2568/getTimeworkSummary`,
         {
           method: "GET",
           headers: {
@@ -199,14 +208,45 @@ const Home = ({ navigation }) => {
           },
         }
       )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          if (data.code === 200) {
-            setShift(data.dtSchedule);
-            setLoading(false);
+      .then((response) => response.json())
+      .then((data) => {
+        //console.log(data);
+        if (data.code === 200) {
+          setLastUpdate(data.lastUpdate);
+          let workTotal = 0; // วันทำการ
+          let w1 = 0; //วันทำงาน
+          let w2 = 0; //มาสาย
+          let w3 = 0; //ออกก่อน
+          let w4 = 0; //มาสาย/ออกก่อน
+          let w5 = 0; //ไม่ลงเวลาเข้า
+          let w6 = 0; //ไม่ลงเวลาออก
+          let w7 = 0; //ขาดงาน
+          for (var i = 0; i < data.dtTimeworkSummary.length; i++) {
+            var row = data.dtTimeworkSummary[i];
+            workTotal += parseInt(row.workTotal);
+            w1 += parseFloat(row.w1);
+            w2 += parseFloat(row.w2);
+            w3 += parseFloat(row.w3);
+            w4 += parseFloat(row.w4);
+            w5 += parseFloat(row.w5);
+            w6 += parseFloat(row.w6);
+            w7 += parseFloat(row.w7);
           }
-        });
+          console.log("workTotal", workTotal);
+          setWorkTotal(workTotal);
+          setWork1(w1);
+          const newWorkList = [
+            { id: "2", name: "มาสาย", value: w2 },
+            { id: "3", name: "ออกก่อน", value: w3 },
+            { id: "4", name: "มาสาย/ออกก่อน", value: w4 },
+            { id: "5", name: "ไม่ลงเวลาเข้า", value: w5 },
+            { id: "6", name: "ไม่ลงเวลาออก", value: w6 },
+            { id: "7", name: "ขาดงาน", value: w7 },
+          ];
+          setWorkList(newWorkList);
+          setLoading(false);
+        }
+      });
     }
   });
 
@@ -240,14 +280,52 @@ const Home = ({ navigation }) => {
           <View>
             <Card>
               <Card.Content>
-                <Text>Card title</Text>
-                <Text>{user && <Text>{user.person_id}</Text>}</Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                  <Text variant="titleLarge">จำนวนวันทำการ</Text>
+                  <Text variant="titleLarge"  style={styles.textWorkTotal}>{workTotal}</Text>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+                  <Text variant="bodyMedium" >จำนวนวันทำงาน</Text>
+                  <Text variant="bodyMedium" style={styles.textWork1}>{work1}</Text>
+                </View>
+                
+                {/* <Text variant="bodyMedium">{user && <Text>{user.person_id}</Text>}</Text> */}
               </Card.Content>
             </Card>
+            <View style={styles.containnerTitle}>
+              <Icon name="av-timer" size={24} color="#fff" />
+              <Text variant="titleMedium" style={{color: "#fff"}}> สรุปการปฏิบัติงาน</Text>
+            </View>
+            <List.Section>
+              {workList.map((row, index) => (
+                <View key={index}>
+                  <List.Item
+                    title={
+                      <Text style={styles.textName}>
+                        {row.name}
+                      </Text>
+                    }
+                    description={
+                      <View>
+                        <Text></Text>
+                      </View>
+                    }
+                    right={(props) => (
+                      <View style={{ textAlign: "center" }}>
+                        <Avatar.Text size={50} label={row.value} />
+                      </View>
+                    )}
+                    // style={styles.listShift}
+                  />
+                  <Divider />
+                </View>
+              ))}
+            </List.Section>
+            <Text style={styles.textLastUpdate}>{lastUpdate}</Text>
           </View>
         )}
       </ScrollView>
-      <View style={styles.container2}>
+      {/* <View style={styles.container2}>
         <View style={styles.box2}>
           <Text style={styles.text2}>1</Text>
         </View>
@@ -260,7 +338,7 @@ const Home = ({ navigation }) => {
         <View style={styles.box2}>
           <Text style={styles.text2}>4</Text>
         </View>
-      </View>
+      </View> */}
     </Background>
   );
 };
