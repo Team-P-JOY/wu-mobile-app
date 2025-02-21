@@ -4,6 +4,7 @@ import TopBar from "../../components/TopBar";
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { List, Switch, Divider } from "react-native-paper";
 
+
 const Main = ({ navigation }) => {
   return (
     <Background>
@@ -12,21 +13,21 @@ const Main = ({ navigation }) => {
         <List.Item
           title="Dashboard"
           description="สถิติบันทึกการปฏิบัติงาน"
-          left={(props) => <List.Icon {...props} icon="image" />}
+          left={(props) => <List.Icon {...props} icon="chart-arc" />}
           onPress={() => navigation.navigate("Home")}
         />
         <Divider />
         <List.Item
           title="ตารางปฏิบัติงาน"
           description="สถานะการปฏิบัติงาน"
-          left={(props) => <List.Icon {...props} icon="image" />}
+          left={(props) => <List.Icon {...props} icon="calendar-month" />}
           onPress={() => navigation.navigate("Schedule")}
         />
         <Divider />
         <List.Item
           title="Timestamp"
           description="สแกนนิ้ว เข้า/ออก"
-          left={(props) => <List.Icon {...props} icon="image" />}
+          left={(props) => <List.Icon {...props} icon="calendar-clock" />}
           onPress={() => navigation.navigate("Timestamp")}
         />
       </List.Section>
