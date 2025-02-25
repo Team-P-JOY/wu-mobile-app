@@ -1,12 +1,24 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  Dimensions,
+} from "react-native";
 import Background from "../components/Background";
 import TopBar from "../components/TopBar";
+import Svg, { Rect } from "react-native-svg";
+
+const { width, height } = Dimensions.get("window");
 
 export default function QrScreen({ navigation }) {
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const [scanned, setScanned] = useState(false);
 
   if (!permission) {
     return (
@@ -16,7 +28,7 @@ export default function QrScreen({ navigation }) {
           back={() => navigation.navigate("Dashboard")}
         />
         <View style={styles.container}>
-          <Text style={styles.message}>XXXX</Text>
+          <Text style={styles.message}>Requesting camera permission...</Text>
         </View>
       </Background>
     );
@@ -31,9 +43,9 @@ export default function QrScreen({ navigation }) {
         />
         <View style={styles.container}>
           <Text style={styles.message}>
-            We need your permission to show the camera
+            We need your permission to use the camera.
           </Text>
-          <Button onPress={requestPermission} title="grant permission" />
+          <Button onPress={requestPermission} title="Grant Permission" />
         </View>
       </Background>
     );
@@ -43,6 +55,13 @@ export default function QrScreen({ navigation }) {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
+  function handleBarCodeScanned({ type, data }) {
+    setScanned(true);
+    Alert.alert("QR Code Scanned", `Type: ${type}\nData: ${data}`, [
+      { text: "OK", onPress: () => setScanned(false) },
+    ]);
+  }
+
   return (
     <Background>
       <TopBar
@@ -50,7 +69,29 @@ export default function QrScreen({ navigation }) {
         back={() => navigation.navigate("Dashboard")}
       />
       <View style={styles.container}>
-        <CameraView style={styles.camera} facing={facing}>
+        <View style={styles.camera}>
+          <CameraView
+            style={styles.cameraFrame}
+            facing={facing}
+            onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+            barcodeScannerSettings={{
+              barcodeTypes: ["qr"],
+            }}
+          >
+            <View style={styles.overlay}>
+              <Svg height={height} width={width}>
+                <Rect
+                  x={width * 0.1}
+                  y={height * 0.3}
+                  width={width * 0.8}
+                  height={width * 0.8}
+                  stroke="orange"
+                  strokeWidth="4"
+                  fill="none"
+                />
+              </Svg>
+            </View>
+          </CameraView>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
@@ -59,7 +100,7 @@ export default function QrScreen({ navigation }) {
               <Text style={styles.text}>Flip Camera</Text>
             </TouchableOpacity>
           </View>
-        </CameraView>
+        </View>
       </View>
     </Background>
   );
@@ -77,20 +118,33 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
   },
-  buttonContainer: {
+
+  cameraFrame: {
     flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
   },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
+  buttonContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
     alignItems: "center",
   },
+  button: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 10,
+    borderRadius: 5,
+  },
   text: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 18,
     color: "white",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
