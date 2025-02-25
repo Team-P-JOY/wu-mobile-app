@@ -37,21 +37,10 @@ const MenuContent = ({ navigation }) => {
       screen: "Notification",
       svg: Notify,
     },
-    {
-      icon: "gift",
-      label: "แลกรางวัล",
-      screen: "Mission",
-      svg: Reward,
-    },
+  
     {
       icon: "ticket",
-      label: "โปรโมชั่น",
-      screen: "Mission",
-      svg: Gift,
-    },
-    {
-      icon: "ticket",
-      label: "Say Hi!",
+      label: "คุยกับเรา",
       screen: "Chat",
       svg: Chat,
     },

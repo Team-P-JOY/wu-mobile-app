@@ -1,21 +1,36 @@
-import { View, Image, Dimensions, StyleSheet } from "react-native";
-import React from "react";
+import { View, Image, Dimensions, StyleSheet, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
 
 const width = Dimensions.get("window").width;
 
 const BannerSlide = () => {
-  const data = [
-    {
-      url: "https://clib.psu.ac.th/greenlibrary/images/2023/02/17/banner-green.png",
-    },
-    {
-      url: "https://dszw1qtcnsa5e.cloudfront.net/community/20250124/10003ce7-01ef-4f5b-b18b-8bf4ca421792/381.png",
-    },
-    {
-      url: "https://n2nsp.com/wp-content/uploads/2021/12/20211209_n2nsp_page_ocr-768x256.jpg",
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await fetch("https://e-jpas.wu.ac.th/img.php");
+        const result = await response.json();
+        setData(result.map(item => ({ url: item.src }))); // แปลงโครงสร้างข้อมูล
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <Carousel
@@ -25,17 +40,14 @@ const BannerSlide = () => {
       renderItem={({ index }) => (
         <View style={styles.itemContainer}>
           <Image
-            index={index}
-            source={{
-              uri: data[index].url,
-            }}
+            source={{ uri: data[index].url }}
             style={styles.itemImage}
           />
         </View>
       )}
       loop={true}
       autoPlay={true}
-      autoPlayInterval={5000}
+      autoPlayInterval={1500} // ✅ ปรับให้สไลด์เร็วขึ้น (1.5 วินาที)
     />
   );
 };
@@ -48,6 +60,12 @@ const styles = StyleSheet.create({
   itemImage: {
     width: width,
     height: width / 3,
+    resizeMode: "cover",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
