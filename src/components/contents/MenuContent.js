@@ -8,6 +8,7 @@ import {
   Reward,
   Gift,
   Chat,
+  Wuhcare,
 } from "../svg";
 import React from "react";
 
@@ -36,6 +37,11 @@ const MenuContent = ({ navigation }) => {
       label: "แจ้งเตือน",
       screen: "Notification",
       svg: Notify,
+    },
+    { icon: "gift", 
+      label: "WUH Care",
+      screen: "Wuhcare",
+      svg: Wuhcare,
     },
   
     {
