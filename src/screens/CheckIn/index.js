@@ -2,21 +2,21 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
-  Button,
   Image,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CameraView, Camera } from "expo-camera";
 import * as Location from "expo-location";
-// import MapView, { Marker } from "react-native-maps";
 import { WebView } from "react-native-webview";
 import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
 import { theme } from "../../core/theme";
 
 const CheckInScreen = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasLocationPermission, setHasLocationPermission] = useState(null);
   const cameraRef = useRef(null);
@@ -24,9 +24,35 @@ const CheckInScreen = ({ navigation }) => {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [currentTime, setCurrentTime] = useState(new Date());
   const [cameraType, setCameraType] = useState("front");
+  const [locations, setLocations] = useState([]);
+  const [loadingLocations, setLoadingLocations] = useState(true);
+  const [locationStatus, setLocationStatus] = useState({
+    status: false,
+    message: "ไม่สามารถระบุตำแหน่งได้",
+    distance: 0,
+  });
 
   useEffect(() => {
-    (async () => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch(
+          "https://e-jpas.wu.ac.th/checkin/point.js"
+        );
+        const jsonRes = await response.json();
+        setLocations(jsonRes);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      } finally {
+        setLoadingLocations(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
+  useEffect(() => {
+    if (loadingLocations) return;
+    const fetchPermissionsAndLocation = async () => {
       const { status: cameraStatus } =
         await Camera.requestCameraPermissionsAsync();
       const { status: locationStatus } =
@@ -36,17 +62,110 @@ const CheckInScreen = ({ navigation }) => {
       setHasLocationPermission(locationStatus === "granted");
 
       if (locationStatus === "granted") {
-        let loc = await Location.getCurrentPositionAsync({});
-        setLocation({
-          latitude: loc.coords.latitude,
-          longitude: loc.coords.longitude,
-        });
+        await _callCurrentLocation();
       }
-    })();
+    };
 
+    fetchPermissionsAndLocation();
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [loadingLocations]);
+
+  const _callCurrentLocation = async () => {
+    let loc = await Location.getCurrentPositionAsync({});
+    setLocation({
+      latitude: loc.coords.latitude,
+      longitude: loc.coords.longitude,
+    });
+
+    _findNearLocation(loc.coords.latitude, loc.coords.longitude);
+
+    // setLocation({
+    //   latitude: 8.6409279,
+    //   longitude: 99.9002386,
+    // });
+    // _findNearLocation(8.6409279, 99.9002386);
+  };
+
+  const haversineDistance = (lat1, lon1, lat2, lon2) => {
+    const toRad = (angle) => (Math.PI / 180) * angle;
+
+    const R = 6371 * 1000;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+  };
+
+  const _findNearLocation = (lat, lng) => {
+    if (!locations || locations.length === 0) {
+      setLocationStatus({
+        status: false,
+        message: "ไม่พบสถานที่",
+        distance: 0,
+      });
+      return;
+    }
+
+    let nearLocation = null;
+    for (let i = 0; i < locations.length; i++) {
+      let distance = haversineDistance(
+        lat,
+        lng,
+        parseFloat(locations[i].LAT),
+        parseFloat(locations[i].LNG)
+      );
+
+      const distanceRadius = distance - parseFloat(locations[i].RADIUS);
+      if (distanceRadius < 0) {
+        nearLocation = {
+          status: true,
+          message: locations[i].UNIT_NAME,
+          distance: distanceRadius,
+        };
+        break;
+      } else if (
+        nearLocation === null ||
+        distanceRadius < nearLocation.distance
+      ) {
+        nearLocation = {
+          status: true,
+          message: locations[i].UNIT_NAME,
+          distance: distanceRadius,
+        };
+      }
+    }
+
+    if (nearLocation) {
+      if (nearLocation.distance < 0) {
+        setLocationStatus({
+          status: true,
+          message: `อยู่ใน ${nearLocation.message}`,
+          distance: 0,
+        });
+      } else {
+        setLocationStatus({
+          status: false,
+          message: `อยู่ใกล้ ${nearLocation.message}`,
+          distance: nearLocation.distance,
+        });
+      }
+    } else {
+      setLocationStatus({
+        status: false,
+        message: "ไม่ได้อยู่ในพื้นที่",
+        distance: 0,
+      });
+    }
+  };
 
   if (hasCameraPermission === null || hasLocationPermission === null) {
     return (
@@ -61,6 +180,22 @@ const CheckInScreen = ({ navigation }) => {
       </Background>
     );
   }
+
+  if (loadingLocations) {
+    return (
+      <Background>
+        <TopBar
+          title="บันทึกเวลาเข้างาน"
+          back={() => navigation.navigate("Dashboard")}
+        />
+        <View style={styles.permissionContainer}>
+          <ActivityIndicator size="large" color="orange" />
+          <Text>กำลังโหลดข้อมูลสถานที่...</Text>
+        </View>
+      </Background>
+    );
+  }
+
   if (!hasCameraPermission) {
     return (
       <Background>
@@ -121,9 +256,28 @@ const CheckInScreen = ({ navigation }) => {
             เวลา {currentTime.toLocaleTimeString("th-TH")}
           </Text>
 
-          <Text style={[styles.headerStatus, { color: "red" }]}>
-            คุณอยู่นอกพื้นที่ทำงาน
+          <Text
+            style={[
+              styles.headerStatus,
+              { color: locationStatus.status ? "green" : "red" },
+            ]}
+          >
+            {locationStatus.message}
           </Text>
+
+          {locationStatus.distance !== 0 ? (
+            <Text
+              style={[
+                styles.headerStatusDis,
+                { color: locationStatus.status ? "green" : "red" },
+              ]}
+            >
+              (ระยะห่าง {locationStatus.distance.toFixed(2)} ม.)
+            </Text>
+          ) : (
+            ""
+          )}
+
           <Text style={[styles.headerStatus2]}>
             ({location.latitude}, {location.longitude})
           </Text>
@@ -173,7 +327,7 @@ const CheckInScreen = ({ navigation }) => {
           </View>
           <View style={styles.mapContainer}>
             <View style={[styles.map, { borderColor: theme.colors.myTheme }]}>
-              {location ? (
+              {location && locations ? (
                 <WebView
                   originWhitelist={["*"]}
                   javaScriptEnabled={true}
@@ -198,16 +352,29 @@ const CheckInScreen = ({ navigation }) => {
                     document.addEventListener("DOMContentLoaded", function() {
                        var map = L.map('map', {
                         center: [${location.latitude}, ${location.longitude}],
-                        zoom: 15,
-                        zoomControl: false  // ✅ ซ่อนปุ่ม Zoom
+                        zoom: 16,
+                        zoomControl: false 
                       });
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
                       }).addTo(map);
-                      L.marker([${location.latitude}, ${location.longitude}]).addTo(map)
-                        // .bindPopup("คุณอยู่ที่นี่")
-                        .openPopup();
-                    });
+
+                      L.marker([${location.latitude}, ${
+                      location.longitude
+                    }]).addTo(map).openPopup();
+                      var locations = ${JSON.stringify(locations)};
+                      locations.forEach(function(location) {
+                        var circle = L.circle([parseFloat(location.LAT), parseFloat(location.LNG)], {
+                              radius: parseFloat(location.RADIUS),
+                              color: '#6a11cb',
+                              fillColor: '#6a11cb',
+                              weight: 0.5,
+                              fillOpacity: 0.2,
+                              bubblingMouseEvents: false,
+                              keyboard: false
+                            }).addTo(map);
+                        });
+                      });
                   </script>
                 </body>
                 </html>
@@ -219,7 +386,10 @@ const CheckInScreen = ({ navigation }) => {
               )}
             </View>
             <View style={styles.buttonsRow}>
-              <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
+              <TouchableOpacity
+                style={styles.mapButton}
+                onPress={_callCurrentLocation}
+              >
                 <Ionicons name="location-outline" size={28} color="white" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
@@ -258,6 +428,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     paddingTop: 15,
+  },
+  headerStatusDis: {
+    fontSize: 15,
+    fontWeight: "bold",
   },
   headerStatus2: {
     fontSize: 10,

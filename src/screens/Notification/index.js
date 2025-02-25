@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useCallback, memo, useState } from "react";
 import {
   View,
   Text,
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Switch,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
 import { WebView } from "react-native-webview";
 import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
@@ -17,138 +17,156 @@ import TopBar from "../../components/TopBar";
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
-const tasks = [
+// Mock data
+const MOCK_TASKS = [
   {
     id: "1",
-    title: "งานที่ต้องทำ 1",
-    description: "รายละเอียดงานที่ต้องทำ",
-    time: "วันนี้",
-    url: "https://example.com/task1",
+    title: "อนุมัติลา",
+    description: "ตรวจสอบและอนุมัติการลาของพนักงาน",
+    subTasks: [
+      { id: "1-1", title: "คำขอจาก A", url: "https://example.com/leave-approval-a" },
+      { id: "1-2", title: "คำขอจาก B", url: "https://example.com/leave-approval-b" },
+    ],
+    initiallyVisible: true,
   },
   {
     id: "2",
-    title: "งานที่ต้องทำ 2",
-    description: "รายละเอียดงานที่ต้องทำ",
-    time: "พรุ่งนี้",
-    url: "https://example.com/task2",
+    title: "อนุมัติแก้ไขเวลา",
+    description: "ตรวจสอบและอนุมัติการแก้ไขเวลาทำงาน",
+    subTasks: [
+      { id: "2-1", title: "คำขอจาก C", url: "https://example.com/time-adjustment-c" },
+      { id: "2-2", title: "คำขอจาก D", url: "https://example.com/time-adjustment-d" },
+    ],
+    initiallyVisible: false,
   },
 ];
 
-const notifications = [
-  {
-    id: "1",
-    type: "message",
-    title: "คุณมีข้อความใหม่จาก Anserene",
-    message: "สวัสดีค่ะ พรุ่งนี้ไปเที่ยวกันมั้ย?",
-    time: "2 นาทีที่แล้ว",
-    unread: true,
-  },
-  {
-    id: "2",
-    type: "group",
-    title: 'มีคนส่งข้อความในกลุ่ม "เพื่อน ม.ปลาย"',
-    message: "เจอกันพรุ่งนี้นะ!",
-    time: "10 นาทีที่แล้ว",
-    unread: false,
-  },
-  {
-    id: "3",
-    type: "system",
-    title: "อัปเดตใหม่! เพิ่มฟีเจอร์แจ้งเตือน",
-    message: "คลิกเพื่อดูรายละเอียด",
-    time: "1 ชั่วโมงที่แล้ว",
-    unread: false,
-  },
+const MOCK_NOTIFICATIONS = [
+  { id: "1", title: "แจ้งเตือน 1", message: "รายละเอียดแจ้งเตือน 1", time: "10 นาทีที่แล้ว" },
+  { id: "2", title: "แจ้งเตือน 2", message: "รายละเอียดแจ้งเตือน 2", time: "30 นาทีที่แล้ว" },
 ];
 
-const chats = [
-  {
-    id: "1",
-    title: "Anserene",
-    lastMessage: "พรุ่งนี้ไปเที่ยวกันมั้ย?",
-    time: "2 นาทีที่แล้ว",
-  },
-  {
-    id: "2",
-    title: "กลุ่ม เพื่อน ม.ปลาย",
-    lastMessage: "เจอกันพรุ่งนี้นะ!",
-    time: "10 นาทีที่แล้ว",
-  },
-];
+const TaskList = memo(({ navigation }) => {
+  const [taskVisibility, setTaskVisibility] = useState(
+    MOCK_TASKS.reduce((acc, task) => ({ ...acc, [task.id]: task.initiallyVisible }), {})
+  );
+  const [showAll, setShowAll] = useState(false);
 
-const TaskList = ({ navigation }) => (
-  <FlatList
-    data={tasks}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => (
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate("WebViewScreen", { url: item.url })}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Icon
-            name="bell-outline"
-            size={20}
-            color="#6200ee"
-            style={{ marginRight: 5 }}
-          />
-          <Text style={styles.title}>{item.title}</Text>
-        </View>
-        <Text>{item.description}</Text>
-        <Text style={styles.time}>{item.time}</Text>
-      </TouchableOpacity>
-    )}
-  />
-);
+  const toggleTaskVisibility = useCallback((taskId) => {
+    setTaskVisibility(prev => ({
+      ...prev,
+      [taskId]: !prev[taskId]
+    }));
+  }, []);
 
-const NotificationList = ({ navigation }) => (
-  <FlatList
-    data={notifications}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => (
-      <TouchableOpacity
-        style={[styles.card, item.unread && styles.unread]}
-        onPress={() =>
-          navigation.navigate("NotificationDetail", { notification: item })
-        }
-      >
-        <Text style={styles.title}>{item.title}</Text>
-        <Text>{item.message}</Text>
-        <Text style={styles.time}>{item.time}</Text>
-      </TouchableOpacity>
-    )}
-  />
-);
+  const renderItem = useCallback(({ item }) => {
+    if (!showAll && !taskVisibility[item.id]) {
+      return null; // ไม่แสดงการ์ดถ้าปิดและไม่ได้เปิด "แสดงทั้งหมด"
+    }
 
-const ChatList = () => (
-  <FlatList
-    data={chats}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => (
+    return (
       <View style={styles.card}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text>{item.lastMessage}</Text>
-        <Text style={styles.time}>{item.time}</Text>
+        <View style={styles.cardHeader}>
+          <TouchableOpacity 
+            style={styles.titleContainer}
+            onPress={() => navigation.navigate("TaskDetail", { task: item })}
+          >
+            <Text style={styles.title}>{item.title}</Text>
+            <Icon name="chevron-right" size={24} color="#007AFF" />
+          </TouchableOpacity>
+          <Switch
+            value={taskVisibility[item.id]}
+            onValueChange={() => toggleTaskVisibility(item.id)}
+          />
+        </View>
+        {showAll && (
+          <View style={styles.cardContent}>
+            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.subTaskCount}>
+              {`${item.subTasks.length} รายการที่ต้องดำเนินการ`}
+            </Text>
+          </View>
+        )}
       </View>
-    )}
-  />
-);
+    );
+  }, [navigation, taskVisibility, toggleTaskVisibility, showAll]);
 
-const WebViewScreen = ({ route }) => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.toggleContainer}>
+        <Text>แสดงทั้งหมด</Text>
+        <Switch value={showAll} onValueChange={setShowAll} />
+      </View>
+      <FlatList
+        data={MOCK_TASKS}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContent}
+      />
+    </View>
+  );
+});
+
+const NotificationList = memo(() => {
+  const renderItem = useCallback(({ item }) => (
+    <View style={styles.card}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.description}>{item.message}</Text>
+      <Text style={styles.time}>{item.time}</Text>
+    </View>
+  ), []);
+
+  return (
+    <FlatList
+      data={MOCK_NOTIFICATIONS}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+      contentContainerStyle={styles.listContent}
+    />
+  );
+});
+
+const TaskDetail = memo(({ route, navigation }) => {
+  const { task } = route.params;
+
+  const renderItem = useCallback(({ item }) => (
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate("WebViewScreen", { url: item.url })}
+    >
+      <Text style={styles.title}>{item.title}</Text>
+    </TouchableOpacity>
+  ), [navigation]);
+
+  return (
+    <FlatList
+      data={task.subTasks}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+      contentContainerStyle={styles.listContent}
+    />
+  );
+});
+
+const WebViewScreen = memo(({ route }) => {
   const { url } = route.params;
-  return <WebView source={{ uri: url }} />;
-};
+  return <WebView source={{ uri: url }} style={styles.webview} />;
+});
 
 const NotificationScreen = () => (
-  <Tab.Navigator>
+  <Tab.Navigator
+    screenOptions={{
+      tabBarLabelStyle: styles.tabLabel,
+      tabBarStyle: styles.tabBar,
+      tabBarIndicatorStyle: styles.tabIndicator,
+    }}
+  >
     <Tab.Screen
       name="งานที่ต้องทำ"
       component={TaskList}
       options={{
         tabBarIcon: ({ color }) => (
-          <View>
-            <Icon name="clipboard-text-outline" size={20} color={color} />
-          </View>
+          <Icon name="clipboard-text-outline" size={20} color={color} />
         ),
       }}
     />
@@ -157,78 +175,138 @@ const NotificationScreen = () => (
       component={NotificationList}
       options={{
         tabBarIcon: ({ color }) => (
-          <View>
-            <Icon name="bell-outline" size={20} color={color} />
-            {notifications.filter((n) => n.unread).length > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  {notifications.filter((n) => n.unread).length}
-                </Text>
-              </View>
-            )}
-          </View>
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="แชท"
-      component={ChatList}
-      options={{
-        tabBarIcon: ({ color }) => (
-          <View>
-            <Icon name="message-outline" size={20} color={color} />
-            {chats.length > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>{chats.length}</Text>
-              </View>
-            )}
-          </View>
+          <Icon name="bell-outline" size={20} color={color} />
         ),
       }}
     />
   </Tab.Navigator>
 );
 
-const AppNavigator = ({ navigation }) => (
+const AppNavigator = () => (
   <Background>
-    <TopBar title="แจ้งเตือน" back={() => navigation.navigate("Dashboard")} />
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Notification"
-        component={NotificationScreen}
-        options={{ headerShown: false }}
+    <TopBar title="แจ้งเตือน" />
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: styles.cardStyle,
+      }}
+    >
+      <Stack.Screen 
+        name="Notification" 
+        component={NotificationScreen} 
+        options={{ headerShown: false }} 
       />
-      <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
+      <Stack.Screen 
+        name="TaskDetail" 
+        component={TaskDetail}
+        options={{
+          headerTitle: "รายละเอียด",
+          headerTitleStyle: styles.headerTitle,
+        }}
+      />
+      <Stack.Screen 
+        name="WebViewScreen" 
+        component={WebViewScreen}
+        options={{
+          headerTitle: "เว็บไซต์",
+          headerTitleStyle: styles.headerTitle,
+        }}
+      />
     </Stack.Navigator>
   </Background>
 );
 
 const styles = StyleSheet.create({
-  badge: {
-    position: "absolute",
-    right: -9,
-    top: -9,
-    backgroundColor: "red",
-    borderRadius: 10,
-    width: 18,
-    height: 18,
-    justifyContent: "center",
-    alignItems: "center",
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
   },
-  badgeText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "bold",
+  cardStyle: {
+    backgroundColor: '#f5f5f5',
+  },
+  listContent: {
+    padding: 16,
   },
   card: {
-    padding: 15,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 8,
-    marginVertical: 5,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  unread: { backgroundColor: "#e0f7fa" },
-  title: { fontSize: 16, fontWeight: "bold" },
-  time: { fontSize: 12, color: "#888", marginTop: 5 },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  titleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  cardContent: {
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  title: { 
+    fontSize: 18, 
+    fontWeight: "600",
+    color: '#1a1a1a',
+    flex: 1,
+  },
+  description: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 8,
+  },
+  subTaskCount: {
+    fontSize: 12,
+    color: '#888888',
+  },
+  time: { 
+    fontSize: 12, 
+    color: "#888888", 
+    marginTop: 8,
+  },
+  toggleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    margin: 16,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  webview: {
+    flex: 1,
+  },
+  tabBar: {
+    elevation: 0,
+    shadowOpacity: 0,
+    backgroundColor: '#ffffff',
+  },
+  tabLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  tabIndicator: {
+    backgroundColor: '#007AFF',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
 });
 
 export default AppNavigator;
