@@ -10,3 +10,4 @@ export { default as Notify } from "./Notify";
 export { default as Gift } from "./Gift";
 export { default as Reward } from "./Reward";
 export { default as Chat } from "./Chat";
+export { default as Wuhcare } from "./Wuhcare";

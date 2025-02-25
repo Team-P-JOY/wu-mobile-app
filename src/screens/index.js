@@ -17,3 +17,4 @@ export { default as WelfareScreen } from "./Welfare";
 export { default as NotificationScreen } from "./Notification";
 export { default as CheckInScreen } from "./CheckIn";
 export { default as ChatScreen } from "./Chat";
+export { default as WuhcareScreen } from "./Wuhcare";
