@@ -69,7 +69,7 @@ const Dashboard = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View style={{ height: width / 3 }}>
+        <View style={{ height: width / 2.3 }}>
           <BannerSlide />
         </View>
         <View>

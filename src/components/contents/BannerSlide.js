@@ -1,4 +1,10 @@
-import { View, Image, Dimensions, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Image,
+  Dimensions,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
 
@@ -13,7 +19,7 @@ const BannerSlide = () => {
       try {
         const response = await fetch("https://e-jpas.wu.ac.th/img.php");
         const result = await response.json();
-        setData(result.map(item => ({ url: item.src }))); // แปลงโครงสร้างข้อมูล
+        setData(result.map((item) => ({ url: item.src }))); // แปลงโครงสร้างข้อมูล
       } catch (error) {
         console.error("Error fetching images:", error);
       } finally {
@@ -35,19 +41,16 @@ const BannerSlide = () => {
   return (
     <Carousel
       width={width}
-      height={width / 3}
+      height={width / 2.3}
       data={data}
       renderItem={({ index }) => (
         <View style={styles.itemContainer}>
-          <Image
-            source={{ uri: data[index].url }}
-            style={styles.itemImage}
-          />
+          <Image source={{ uri: data[index].url }} style={styles.itemImage} />
         </View>
       )}
       loop={true}
       autoPlay={true}
-      autoPlayInterval={1500} // ✅ ปรับให้สไลด์เร็วขึ้น (1.5 วินาที)
+      autoPlayInterval={2000}
     />
   );
 };
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
   },
   itemImage: {
     width: width,
-    height: width / 3,
+    height: width / 2.3,
     resizeMode: "cover",
   },
   loadingContainer: {
