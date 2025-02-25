@@ -12,6 +12,7 @@ import {
 import Background from "../components/Background";
 import TopBar from "../components/TopBar";
 import Svg, { Rect } from "react-native-svg";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
@@ -97,7 +98,8 @@ export default function QrScreen({ navigation }) {
               style={styles.button}
               onPress={toggleCameraFacing}
             >
-              <Text style={styles.text}>Flip Camera</Text>
+              <Ionicons name="camera-reverse-outline" size={28} color="white" />
+              <Text style={styles.text}>สลับจอ</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -130,11 +132,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: 10,
-    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#fff",
+    padding: 15,
+    borderRadius: 50,
   },
   text: {
+    marginLeft: 10,
     fontSize: 18,
     color: "white",
   },

@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   captureButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderWidth: 1,
     borderColor: "#fff",
     padding: 15,
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     // marginTop: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
