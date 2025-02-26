@@ -22,6 +22,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { AuthContext } from "../context/AuthContext";
 import BannerSlide from "../components/contents/BannerSlide";
 import MenuContent from "../components/contents/MenuContent";
+import WebPortalContext from "../components/contents/WebPortalContext";
 
 const width = Dimensions.get("window").width;
 
@@ -92,38 +93,8 @@ const Dashboard = ({ navigation }) => {
           </Card>
 
           <MenuContent navigation={navigation} />
-
           <Divider style={{ marginVertical: 10 }} />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ padding: 10 }}
-          >
-            {["ฟรี ป้าย QR", "GrabFood ลด 50%", "บัญชีออมทอง"].map(
-              (promo, index) => (
-                <Card
-                  key={index}
-                  style={{
-                    marginRight: 10,
-                    width: 250,
-                    backgroundColor: "#6a11cb",
-                  }}
-                >
-                  <Card.Content>
-                    <Text variant="titleLarge" style={{ color: "#fff" }}>
-                      {promo}
-                    </Text>
-                    <Text variant="bodyMedium" style={{ color: "#fff" }}>
-                      Card content
-                    </Text>
-                  </Card.Content>
-                  <Card.Actions>
-                    <Button mode="elevated">อ่าน</Button>
-                  </Card.Actions>
-                </Card>
-              )
-            )}
-          </ScrollView>
+          <WebPortalContext navigation={navigation} />
         </View>
       </ScrollView>
     </View>

@@ -14,6 +14,8 @@ import { WebView } from "react-native-webview";
 import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
 import { theme } from "../../core/theme";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 const CheckInScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -86,6 +88,13 @@ const CheckInScreen = ({ navigation }) => {
     // });
     // _findNearLocation(8.6409279, 99.9002386);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      setPhoto(null);
+      _callCurrentLocation();
+    }, [])
+  );
 
   const haversineDistance = (lat1, lon1, lat2, lon2) => {
     const toRad = (angle) => (Math.PI / 180) * angle;
@@ -385,21 +394,28 @@ const CheckInScreen = ({ navigation }) => {
                 <Text>กำลังดึงตำแหน่ง GPS...</Text>
               )}
             </View>
-            <View style={styles.buttonsRow}>
-              <TouchableOpacity
-                style={styles.mapButton}
-                onPress={_callCurrentLocation}
-              >
-                <Ionicons name="location-outline" size={28} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.mapButton} onPress={switchCamera}>
-                <Ionicons
-                  name="camera-reverse-outline"
-                  size={28}
-                  color="white"
-                />
-              </TouchableOpacity>
-            </View>
+            {!photo ? (
+              <View style={styles.buttonsRow}>
+                <TouchableOpacity
+                  style={styles.mapButton}
+                  onPress={_callCurrentLocation}
+                >
+                  <Ionicons name="location-outline" size={28} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.mapButton}
+                  onPress={switchCamera}
+                >
+                  <Ionicons
+                    name="camera-reverse-outline"
+                    size={28}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              ""
+            )}
           </View>
         </View>
       </View>

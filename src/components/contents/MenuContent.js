@@ -38,12 +38,8 @@ const MenuContent = ({ navigation }) => {
       screen: "Notification",
       svg: Notify,
     },
-    { icon: "gift", 
-      label: "WUH Care",
-      screen: "Wuhcare",
-      svg: Wuhcare,
-    },
-  
+    { icon: "gift", label: "WUH Care", screen: "Wuhcare", svg: Wuhcare },
+
     {
       icon: "ticket",
       label: "คุยกับเรา",
@@ -70,7 +66,6 @@ const MenuContent = ({ navigation }) => {
             marginVertical: 10,
           }}
         >
-          {/* <IconButton icon={item.icon} size={40} /> */}
           <item.svg width={50} height={50} />
           <Text variant="bodyMedium">{item.label}</Text>
         </TouchableOpacity>

@@ -14,6 +14,7 @@ import {
   ChatScreen,
   PinResetScreen,
   WuhcareScreen,
+  WebPortalScreen,
 } from "../screens";
 import FooterBar from "../components/FooterBar";
 
@@ -41,6 +42,7 @@ export default function MainNavigator() {
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="PinReset" component={PinResetScreen} />
       <Tab.Screen name="Wuhcare" component={WuhcareScreen} />
+      <Tab.Screen name="WebPortal" component={WebPortalScreen} />
     </Tab.Navigator>
   );
 }

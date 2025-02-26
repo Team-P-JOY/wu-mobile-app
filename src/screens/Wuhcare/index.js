@@ -6,7 +6,7 @@ import WebView from "../../components/WebView";
 const WuhcareScreen = () => {
   return (
     <Background>
-      {/* <TopBar title="ข่าวสาร" /> */}
+      <TopBar title="WUH Care" />
       <WebView url="https://hospital.wu.ac.th/wuhcare/" />
     </Background>
   );
