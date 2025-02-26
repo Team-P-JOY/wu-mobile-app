@@ -94,7 +94,7 @@ const Dashboard = ({ navigation }) => {
 
           <MenuContent navigation={navigation} />
           <Divider style={{ marginVertical: 10 }} />
-          <WebPortalContext navigation={navigation} />
+          <WebPortalContext navigation={navigation} user={user} />
         </View>
       </ScrollView>
     </View>

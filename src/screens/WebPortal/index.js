@@ -5,7 +5,6 @@ import WebView from "../../components/WebView";
 
 const WebPortal = ({ navigation, route }) => {
   const { name, url } = route.params;
-  console.log("WebPortal", name, url);
   return (
     <Background>
       <TopBar title={name} back={() => navigation.navigate("Dashboard")} />

@@ -15,14 +15,18 @@ export default function SettingsScreen({ navigation }) {
         <List.Item
           title="เปลี่ยน PIN"
           description="ตั้งค่า PIN ใหม่"
-          left={(props) => <List.Icon {...props} icon="key" />}
+          left={(props) => (
+            <List.Icon {...props} icon="key-outline" color="#6a11cb" />
+          )}
           onPress={() => navigation.navigate("PinReset")}
         />
         <Divider />
         <List.Item
           title="เปิดใช้งาน Dark Mode"
           description="เปิดใช้งาน Dark Mode สำหรับแอปพลิเคชัน"
-          left={(props) => <List.Icon {...props} icon="theme-light-dark" />}
+          left={(props) => (
+            <List.Icon {...props} icon="theme-light-dark" color="#6a11cb" />
+          )}
           right={() => (
             <Switch
               value={isDarkMode}
@@ -32,9 +36,24 @@ export default function SettingsScreen({ navigation }) {
         />
         <Divider />
         <List.Item
+          title="Developer Mode"
+          description="ตรวจสอบหมวดนักพัฒนา"
+          left={(props) => (
+            <List.Icon
+              {...props}
+              icon="application-brackets-outline"
+              color="#6a11cb"
+            />
+          )}
+          onPress={() => navigation.navigate("DevBlocked")}
+        />
+        <Divider />
+        <List.Item
           title="ออกจากระบบ"
           description="กลับไปหน้า Login"
-          left={(props) => <List.Icon {...props} icon="logout" />}
+          left={(props) => (
+            <List.Icon {...props} icon="logout" color="#6a11cb" />
+          )}
           onPress={logout}
         />
       </List.Section>

@@ -8,6 +8,7 @@ import {
   WalletScreen,
   NewsScreen,
   TimeAttendanceScreen,
+  DevBlockedScreen,
   WelfareScreen,
   NotificationScreen,
   CheckInScreen,
@@ -32,6 +33,7 @@ export default function MainNavigator() {
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen name="DevBlocked" component={DevBlockedScreen} />
       <Tab.Screen name="Qr" component={QrScreen} />
       <Tab.Screen name="Wallet" component={WalletScreen} />
       <Tab.Screen name="News" component={NewsScreen} />
