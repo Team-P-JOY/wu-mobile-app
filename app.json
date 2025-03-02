@@ -17,7 +17,8 @@
       "adaptiveIcon": {
         "backgroundColor": "#6a11cb"
       },
-      "package": "com.anonymous.appcolabchatgpt"
+      "package": "com.anonymous.appcolabchatgpt",
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,6 +32,11 @@
           "recordAudioAndroid": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7df88ccf-a272-450b-9abd-45f3e18100a3"
+      }
+    }
   }
 }

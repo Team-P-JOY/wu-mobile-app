@@ -362,7 +362,8 @@ const CheckInScreen = ({ navigation }) => {
                        var map = L.map('map', {
                         center: [${location.latitude}, ${location.longitude}],
                         zoom: 16,
-                        zoomControl: false 
+                        zoomControl: false,
+                        attributionControl: false 
                       });
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
