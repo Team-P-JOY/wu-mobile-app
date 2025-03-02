@@ -355,7 +355,6 @@ const CheckInScreen = ({ navigation }) => {
                 </head>
                 <body>
                   <div id="map"></div>
-                  test
                   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
                   <script>
                     document.addEventListener("DOMContentLoaded", function() {
@@ -363,7 +362,13 @@ const CheckInScreen = ({ navigation }) => {
                         center: [${location.latitude}, ${location.longitude}],
                         zoom: 16,
                         zoomControl: false,
-                        attributionControl: false 
+                        attributionControl: false,
+                        dragging: false,
+                        touchZoom: false,
+                        scrollWheelZoom: false,
+                        doubleClickZoom: false,
+                        boxZoom: false,
+                        keyboard: false
                       });
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
