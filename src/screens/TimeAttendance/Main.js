@@ -30,6 +30,13 @@ const Main = ({ navigation }) => {
           left={(props) => <List.Icon {...props} icon="calendar-clock" />}
           onPress={() => navigation.navigate("Timestamp")}
         />
+        <Divider />
+        <List.Item
+          title="บันทึกการลา"
+          description="สถิติบันทึกการลา"
+          left={(props) => <List.Icon {...props} icon="account-arrow-right" />}
+          onPress={() => navigation.navigate("Leave")}
+        />
       </List.Section>
     </Background>
   );

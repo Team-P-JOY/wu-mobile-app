@@ -21,10 +21,10 @@ import TopBar from "../../components/TopBar";
 import { AuthContext } from "../../context/AuthContext";
 import { getDatetext } from "../../core/utils";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MenuContent from "./MenuContent";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Makes the container take up the full screen
     padding: 15,
   },
   text: {
@@ -265,10 +265,13 @@ const Home = ({ navigation }) => {
       {/* Header session */}
       <TopBar
         title="Dashboard"
-        right={() => navigation.navigate("Main")}
-        rightIcon="menu"
+        // right={() => navigation.navigate("Main")}
+        // rightIcon="menu"
       />
 
+      {/* Menu */}
+      <MenuContent navigation={navigation} />
+    
       {/* Body session */}
       <ScrollView
         style={styles.container}

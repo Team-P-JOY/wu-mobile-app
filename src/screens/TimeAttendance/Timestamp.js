@@ -12,6 +12,7 @@ import TopBar from "../../components/TopBar";
 import { AuthContext } from "../../context/AuthContext";
 import { getDatetext } from "../../core/utils";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MenuContent from "./MenuContent";
 
 const statusColor = (status, leaveday) => {
   let color = "white";
@@ -116,7 +117,14 @@ const Schedule = ({ navigation }) => {
   return (
     <Background>
       {/* Header session */}
-      <TopBar title="สแกนนิ้ว เข้า/ออก" right={() => navigation.navigate("Main")} rightIcon="menu" />
+      <TopBar 
+        title="สแกนนิ้ว เข้า/ออก" 
+        // right={() => navigation.navigate("Main")} 
+        // rightIcon="menu" 
+      />
+
+      {/* Menu */}
+      <MenuContent navigation={navigation} />
 
       {/* ✅ เปลี่ยน Dropdown เป็น Menu */}
       <View style={styles.dropdownMonth}>
@@ -158,7 +166,7 @@ const Schedule = ({ navigation }) => {
                   }
                   description={
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Icon name="map-marker-radius" size={22} color="#FA8072" />
+                      <Icon name={row.unitNameFin ? "fingerprint" : "map-marker-radius"} size={22} color="#FA8072" />
                       <Text style={styles.labelShift}>
                         {row.unitNameFin ? row.unitNameFin : row.unitNameGps}
                       </Text>

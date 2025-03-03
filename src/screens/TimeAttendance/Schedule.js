@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import TopBar from "../../components/TopBar";
 import { AuthContext } from "../../context/AuthContext";
 import { getDatetext } from "../../core/utils";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MenuContent from "./MenuContent";
 
 const statusColor = (status, leaveday) => {
   let color = "white";
@@ -37,7 +38,6 @@ const statusColor = (status, leaveday) => {
 
 const Schedule = ({ navigation }) => {
   const { user } = useContext(AuthContext);
-  console.log("user", user);
 
   let curDate = new Date();
   let curMonth = curDate.getMonth() + 1;
@@ -70,7 +70,7 @@ const Schedule = ({ navigation }) => {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        //console.log(data);
         if (data.code === 200) {
           let arr = [];
           for (var i = 0; i < data.dtMonth.length; i++) {
@@ -119,15 +119,12 @@ const Schedule = ({ navigation }) => {
       {/* Header session */}
       <TopBar
         title="ตารางปฏิบัติงาน"
-        right={() => navigation.navigate("Main")}
-        rightIcon="menu"
+        // right={() => navigation.navigate("Main")}
+        // rightIcon="menu"
       />
 
-      {/* {user && <Text>{user.person_id}</Text>}
-
-      <TouchableOpacity onPress={() => navigation.navigate("Timestamp")}>
-        <Text>test to go to Timestamp</Text>
-      </TouchableOpacity> */}
+      {/* Menu */}
+      <MenuContent navigation={navigation} />
 
       {/* ✅ เปลี่ยน Dropdown เป็น Menu */}
       <View style={styles.dropdownMonth}>
@@ -210,7 +207,7 @@ const Schedule = ({ navigation }) => {
                     </View>
                   )}
                   style={styles.listShift}
-                  onPress={() => navigation.navigate("ScheduleDetail", { id: row.timeworkId, personId: row.personId, startDate: row.startDate })}
+                  onPress={() => navigation.navigate("ScheduleDetail", { id: row.timeworkId, personId: row.personId, startDate: row.startDate, shiftId: row.shiftId })}
                 />
                 <Divider />
               </View>

@@ -5,6 +5,7 @@ import Home from "./Home";
 import Schedule from "./Schedule";
 import ScheduleDetail from "./ScheduleDetail";
 import Timestamp from "./Timestamp";
+import Leave from "./Leave";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +23,7 @@ export default function TimeAttendanceScreen() {
       <Tab.Screen name="Schedule" component={Schedule} />
       <Tab.Screen name="ScheduleDetail" component={ScheduleDetail} />
       <Tab.Screen name="Timestamp" component={Timestamp} />
+      <Tab.Screen name="Leave" component={Leave} />
     </Tab.Navigator>
   );
 }
