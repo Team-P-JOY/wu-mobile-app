@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { List, Switch, Divider } from "react-native-paper";
 import { AuthContext } from "../context/AuthContext";
 import TopBar from "../components/TopBar";
 import Background from "../components/Background";
+import {version} from '../../package.json';
 
 export default function SettingsScreen({ navigation }) {
   const { logout, isDarkMode, setDarkMode } = useContext(AuthContext);
@@ -55,6 +56,11 @@ export default function SettingsScreen({ navigation }) {
             <List.Icon {...props} icon="logout" color="#6a11cb" />
           )}
           onPress={logout}
+        />
+        <Divider />
+        <List.Item
+          title="Version"
+          description={"เวอร์ชั่น: " + version}
         />
       </List.Section>
     </Background>

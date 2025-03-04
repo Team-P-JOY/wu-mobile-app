@@ -271,7 +271,7 @@ const Home = ({ navigation }) => {
 
       {/* Menu */}
       <MenuContent navigation={navigation} />
-    
+      
       {/* Body session */}
       <ScrollView
         style={styles.container}
