@@ -44,14 +44,14 @@ const MOCK_TASKS = [
 ];
 
 const MOCK_NOTIFICATIONS = [
-  { id: "1", title: "แจ้งเตือน 1", message: "รายละเอียดแจ้งเตือน 1", time: "10 นาทีที่แล้ว", expoToken: "ExponentPushToken[IO6DzaLFeT9jfN3yrlUsaW]" },
-  { id: "2", title: "แจ้งเตือน 2", message: "รายละเอียดแจ้งเตือน 2", time: "30 นาทีที่แล้ว", expoToken: "ExponentPushToken[PAPrjgFO7mb8hkFPBCIsH2]" },
+  { id: "1", title: "อนุมัติการลา", message: "นายณัฐดนัย สุวรรณโชติ ลาพักผ่อน 2 วัน", time: "10 นาทีที่แล้ว", expoToken: "ExponentPushToken[IO6DzaLFeT9jfN3yrlUsaW]" },
+  { id: "2", title: "ให้ความเห็นเบื้องต้น", message: "นายฮากิม มูดอ ลาป่วย 1 วัน", time: "30 นาทีที่แล้ว", expoToken: "ExponentPushToken[PAPrjgF07mb8hkFPBCIsH2]" },
 ];
 
-const sendMessage = (expoToken) => {
-  const title = "อนุมัติการลา";
-  const body = "นายณัฐดนัย สุวรรณโชติ ได้อนุมัติการลาพักผ่อน จำนวน 2 วัน ระหว่างวันที่  1 เม.ย. 2568 - 2 เม.ย. 2568";
-  sendPushNotifications(expoToken, title, body);
+const sendMessage = (iTitle, iExpoToken) => {
+  const title = iTitle;
+  const body = "นายณัฐดนัย สุวรรณโชติ ได้" + title;
+  sendPushNotifications(iExpoToken, title, body);
 };
 
 const TaskList = memo(({ navigation }) => {
@@ -128,7 +128,7 @@ const NotificationList = memo(() => {
         title={item.title}
         subtitle={item.message}
         left={(props) => <Avatar.Icon {...props} icon="folder" />}
-        right={(props) => <Button mode="outlined" style={{ marginRight: 8 }} onPress={() => sendMessage(item.expoToken)}>อนุมัติ</Button>}
+        right={(props) => <Button mode="outlined" style={{ marginRight: 8 }} onPress={() => sendMessage(item.title, item.expoToken)}>อนุมัติ</Button>}
         // right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
       />
     </Card>
