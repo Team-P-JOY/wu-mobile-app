@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { registerForPushNotifications, sendPushNotifications } from "./notifications";
 
 const userStore = "@user";
 const pinStore = "@userPin";
 const darkStore = "@isDarkMode";
+const expoToken = "@expoToken";
 
 const getDarkMode = async () => {
   const isDark = await AsyncStorage.getItem(darkStore);
@@ -29,6 +31,12 @@ const getUser = async () => {
   return user ? JSON.parse(user) : null;
 };
 
+// Token device โทรศัพท์
+const getExpoToken = async () => {
+  const data = await AsyncStorage.getItem(expoToken);
+  return data ? data : null;
+};
+
 const login = async (username, password) => {
   const respone = await fetch("https://hrms.wu.ac.th/index.php?r=api/auth", {
     method: "POST",
@@ -49,6 +57,7 @@ const login = async (username, password) => {
   //     email: "",
   //   },
   // };
+
   await AsyncStorage.setItem(userStore, JSON.stringify(userAuth.data));
   return "";
 };
@@ -74,6 +83,7 @@ export default {
   login,
   logout,
   getUser,
+  getExpoToken,
   checkAuth,
   getDarkMode,
   setDarkMode,

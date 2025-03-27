@@ -13,6 +13,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { WebView } from "react-native-webview";
 import Background from "../../components/Background";
 import TopBar from "../../components/TopBar";
+import { Avatar, Card, Button, IconButton  } from 'react-native-paper';
+import { sendPushNotifications } from "../../core/notifications";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -42,22 +44,28 @@ const MOCK_TASKS = [
 ];
 
 const MOCK_NOTIFICATIONS = [
-  { id: "1", title: "แจ้งเตือน 1", message: "รายละเอียดแจ้งเตือน 1", time: "10 นาทีที่แล้ว" },
-  { id: "2", title: "แจ้งเตือน 2", message: "รายละเอียดแจ้งเตือน 2", time: "30 นาทีที่แล้ว" },
+  { id: "1", title: "แจ้งเตือน 1", message: "รายละเอียดแจ้งเตือน 1", time: "10 นาทีที่แล้ว", expoToken: "ExponentPushToken[IO6DzaLFeT9jfN3yrlUsaW]" },
+  { id: "2", title: "แจ้งเตือน 2", message: "รายละเอียดแจ้งเตือน 2", time: "30 นาทีที่แล้ว", expoToken: "ExponentPushToken[PAPrjgFO7mb8hkFPBCIsH2]" },
 ];
 
-const TaskList = memo(({ navigation }) => {
-  const [taskVisibility, setTaskVisibility] = useState(
-    MOCK_TASKS.reduce((acc, task) => ({ ...acc, [task.id]: task.initiallyVisible }), {})
-  );
-  const [showAll, setShowAll] = useState(false);
+const sendMessage = (expoToken) => {
+  const title = "อนุมัติการลา";
+  const body = "นายณัฐดนัย สุวรรณโชติ ได้อนุมัติการลาพักผ่อน จำนวน 2 วัน ระหว่างวันที่  1 เม.ย. 2568 - 2 เม.ย. 2568";
+  sendPushNotifications(expoToken, title, body);
+};
 
-  const toggleTaskVisibility = useCallback((taskId) => {
-    setTaskVisibility(prev => ({
-      ...prev,
-      [taskId]: !prev[taskId]
-    }));
-  }, []);
+const TaskList = memo(({ navigation }) => {
+const [taskVisibility, setTaskVisibility] = useState(
+  MOCK_TASKS.reduce((acc, task) => ({ ...acc, [task.id]: task.initiallyVisible }), {})
+);
+const [showAll, setShowAll] = useState(false);
+
+const toggleTaskVisibility = useCallback((taskId) => {
+  setTaskVisibility(prev => ({
+    ...prev,
+    [taskId]: !prev[taskId]
+  }));
+}, []);
 
   const renderItem = useCallback(({ item }) => {
     if (!showAll && !taskVisibility[item.id]) {
@@ -109,11 +117,21 @@ const TaskList = memo(({ navigation }) => {
 
 const NotificationList = memo(() => {
   const renderItem = useCallback(({ item }) => (
-    <View style={styles.card}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.description}>{item.message}</Text>
-      <Text style={styles.time}>{item.time}</Text>
-    </View>
+    // <View style={styles.card}>
+    //   <Text style={styles.title}>{item.title}</Text>
+    //   <Text style={styles.description}>{item.message}</Text>
+    //   <Text style={styles.time}>{item.time}</Text>
+    //   <Button mode="outlined" style={{ marginTop: 8 }}>ดูรายละเอียด</Button>
+    // </View>
+    <Card style={styles.notificationContainer}>
+      <Card.Title
+        title={item.title}
+        subtitle={item.message}
+        left={(props) => <Avatar.Icon {...props} icon="folder" />}
+        right={(props) => <Button mode="outlined" style={{ marginRight: 8 }} onPress={() => sendMessage(item.expoToken)}>อนุมัติ</Button>}
+        // right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
+      />
+    </Card>
   ), []);
 
   return (
@@ -307,6 +325,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#1a1a1a',
   },
+  notificationContainer: {
+    marginBottom: 10
+  }
 });
 
 export default AppNavigator;

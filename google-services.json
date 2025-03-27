@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "788287659386",
+    "project_id": "wu-notification",
+    "storage_bucket": "wu-notification.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788287659386:android:3fb00eb4f5de9542920ac3",
+        "android_client_info": {
+          "package_name": "com.anonymous.appcolabchatgpt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAO4CjYJjRAJnY-HY_a3bhzJgT0Kbbnmow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

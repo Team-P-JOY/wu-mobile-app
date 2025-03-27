@@ -1,13 +1,107 @@
-import React, { useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { View, StyleSheet, Button } from "react-native";
 import { Text, Avatar, Card, Divider } from "react-native-paper";
 import { AuthContext } from "../context/AuthContext";
 import BackgroundImage from "../components/BackgroundImage";
 import QRCode from "react-native-qrcode-svg";
 import { theme } from "../core/theme";
+import { registerForPushNotifications, sendPushNotifications } from "../core/notifications";
+
+// import * as Device from "expo-device";
+// import * as Notifications from "expo-notifications";
+// import Constants from "expo-constants";
+
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: false,
+//   }),
+// });
+
+// async function sendPushNotification(expoPushToken) {
+//   const message = {
+//     to: expoPushToken,
+//     sound: 'default',
+//     title: "ยินดีตอนรับ",
+//     body: 'สวัสดีครับ คุณมีข้อความใหม่จากเรา',
+//     data: { data: 'goes here', test: { test1: 'more data' } },
+//   };
+
+//   await fetch('https://exp.host/--/api/v2/push/send', {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(message),
+//   });
+// }
+
+// async function registerForPushNotificationsAsync() {
+//   let token;
+
+//   if (Platform.OS === 'android') {
+//     await Notifications.setNotificationChannelAsync('myNotificationChannel', {
+//       name: 'A channel is needed for the permissions prompt to appear',
+//       importance: Notifications.AndroidImportance.MAX,
+//       vibrationPattern: [0, 250, 250, 250],
+//       lightColor: '#FF231F7C',
+//     });
+//   }
+
+//   if (Device.isDevice) {
+//     const { status: existingStatus } = await Notifications.getPermissionsAsync();
+//     let finalStatus = existingStatus;
+//     if (existingStatus !== 'granted') {
+//       const { status } = await Notifications.requestPermissionsAsync();
+//       finalStatus = status;
+//     }
+//     if (finalStatus !== 'granted') {
+//       alert('Failed to get push token for push notification!');
+//       return;
+//     }
+//     // Learn more about projectId:
+//     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+//     // EAS projectId is used here.
+//     try {
+//       const projectId =
+//         Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+//       if (!projectId) {
+//         throw new Error('Project ID not found');
+//       }
+//       token = (
+//         await Notifications.getExpoPushTokenAsync({
+//           projectId,
+//         })
+//       ).data;
+//       console.log(token);
+//     } catch (e) {
+//       token = `${e}`;
+//     }
+//   } else {
+//     alert('Must use physical device for Push Notifications');
+//   }
+
+//   return token;
+// }
 
 export default function ProfileScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext);
+  const [expoPushToken, setExpoPushToken] = useState('');
+
+  useEffect(() => {
+    // Get and Set the Push Token
+    registerForPushNotifications().then((token) => setExpoPushToken(token));
+    console.log('Push Notification Token:', expoPushToken);
+  }, []);
+
+  const sendMessage = () => {
+    const title = "WU Application";
+    const body = 'ยินดีตอนรับ ' + user.fullname_th + " เข้าสู่ระบบ WU Application";
+    sendPushNotifications(expoPushToken, title, body);
+  };
+  
 
   return (
     <BackgroundImage>
@@ -40,7 +134,24 @@ export default function ProfileScreen({ navigation }) {
           >
             {user?.fullname_en}
           </Text>
+          <Text
+            variant="bodyLarge"
+          >
+            {expoPushToken}
+          </Text>
         </View>
+
+        {/* <Button
+        title="Press to Send a notification"
+        onPress={async () => {
+          await sendPushNotifications(expoPushToken);
+        }}
+        /> */}
+
+        <Button
+          title="Press to Send a notification"
+          onPress={() => sendMessage()}
+        />
 
         <Card
           mode="outlined"
